@@ -3,21 +3,21 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Car poses per section: x / y are fractions of half the viewport (-1 … 1).
+// Authentic Ferrari poses per section: x / y are fractions of half the viewport (-1 … 1).
 const POSES = {
   desktop: {
-    hero: { x: 0, y: 0, rotY: 0, rotZ: 0, scale: 1 },
-    cold: { x: -0.42, y: -0.02, rotY: Math.PI * 0.9, rotZ: -0.15, scale: 0.95 },
-    flavors: { x: 0.44, y: 0, rotY: Math.PI * 2, rotZ: 0.1, scale: 1.05 },
-    story: { x: 0.58, y: -0.04, rotY: Math.PI * 2.9, rotZ: 0.22, scale: 0.82 },
-    share: { x: 0.42, y: 0, rotY: Math.PI * 3.8, rotZ: -0.08, scale: 1.15 },
+    hero: { x: 0, y: -0.05, rotY: Math.PI * 0.78, rotZ: 0.04, scale: 1.15 },
+    cold: { x: -0.42, y: -0.04, rotY: Math.PI * 0.38, rotZ: -0.12, scale: 1.05 },
+    flavors: { x: 0.44, y: 0, rotY: Math.PI * 1.8, rotZ: 0.08, scale: 1.1 },
+    story: { x: 0.58, y: -0.04, rotY: Math.PI * 2.78, rotZ: 0.16, scale: 0.88 },
+    share: { x: 0.42, y: -0.02, rotY: Math.PI * 3.15, rotZ: -0.06, scale: 1.25 },
   },
   mobile: {
-    hero: { x: 0, y: -0.2, rotY: 0, rotZ: 0, scale: 1 },
-    cold: { x: 0, y: 0.4, rotY: Math.PI * 0.9, rotZ: -0.15, scale: 0.8 },
-    flavors: { x: 0, y: 0.38, rotY: Math.PI * 2, rotZ: 0.08, scale: 0.85 },
-    story: { x: 0.6, y: 0.65, rotY: Math.PI * 2.9, rotZ: 0.22, scale: 0.45 },
-    share: { x: 0, y: 0.42, rotY: Math.PI * 3.8, rotZ: -0.08, scale: 0.9 },
+    hero: { x: 0, y: -0.22, rotY: Math.PI * 0.78, rotZ: 0.04, scale: 1.0 },
+    cold: { x: 0, y: 0.4, rotY: Math.PI * 0.38, rotZ: -0.12, scale: 0.85 },
+    flavors: { x: 0, y: 0.38, rotY: Math.PI * 1.8, rotZ: 0.08, scale: 0.9 },
+    story: { x: 0.6, y: 0.66, rotY: Math.PI * 2.78, rotZ: 0.16, scale: 0.5 },
+    share: { x: 0, y: 0.42, rotY: Math.PI * 3.15, rotZ: -0.06, scale: 0.95 },
   },
 };
 

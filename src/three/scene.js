@@ -1,11 +1,10 @@
 import * as THREE from 'three';
-import { createCar } from './car.js';
+import { loadCar } from './car.js';
 import { createSpeedStreaks, createExhaustBurst } from './particles.js';
-import { createShadow } from './groundShadow.js';
 
 /**
  * Photorealistic Automotive Studio Environment
- * Long softbox light strips reflect crisp vertical highlights across the sculpted body.
+ * Softbox light strips reflect crisp vertical highlights across the sculpted body.
  */
 function createStudioEnvironment(renderer) {
   const env = new THREE.Scene();
@@ -25,11 +24,11 @@ function createStudioEnvironment(renderer) {
     env.add(mesh);
   };
 
-  softbox(2.2, 16, 9.5, 0xffffff, [-7, 0, 4]); // Main key strip, left
-  softbox(1.4, 16, 7.0, 0xffefe4, [7, 0, 3]); // Rim strip, right
-  softbox(12, 5, 3.0, 0xffffff, [0, 10, 1]); // Overhead studio ceiling
-  softbox(9, 9, 1.2, 0xff2200, [0, -1, -9]); // Warm crimson rear bounce
-  softbox(14, 7, 0.8, 0xd0e8ff, [0, -2, 11]); // Cool front studio fill
+  softbox(2.2, 16, 9.5, 0xffffff, [-7, 0, 4]); // Key light strip, left
+  softbox(1.4, 16, 7.0, 0xffefe4, [7, 0, 3]); // Rim light strip, right
+  softbox(12, 5, 3.2, 0xffffff, [0, 10, 1]); // Overhead ceiling
+  softbox(9, 9, 1.4, 0xff2200, [0, -1, -9]); // Warm crimson rear bounce
+  softbox(14, 7, 0.9, 0xd0e8ff, [0, -2, 11]); // Cool front studio fill
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   const tex = pmrem.fromScene(env, 0.02).texture;
@@ -37,7 +36,7 @@ function createStudioEnvironment(renderer) {
   return tex;
 }
 
-export function createScene(canvas, { reducedMotion = false } = {}) {
+export async function createScene(canvas, { reducedMotion = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -52,7 +51,7 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
   camera.position.set(0, 0, 11);
 
   // Directional Studio Lights
-  const key = new THREE.DirectionalLight(0xffffff, 1.4);
+  const key = new THREE.DirectionalLight(0xffffff, 1.5);
   key.position.set(5, 7, 6);
   scene.add(key);
 
@@ -60,10 +59,10 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
   rim.position.set(-7, 3, -5);
   scene.add(rim);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
   // ── Rig Hierarchy: scrollRig → floatRig → spinRig → car
-  const car = createCar();
+  const car = await loadCar();
   const scrollRig = new THREE.Group();
   const floatRig = new THREE.Group();
   const spinRig = new THREE.Group();
@@ -72,22 +71,16 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
   scrollRig.add(floatRig);
   scene.add(scrollRig);
 
-  // Speed lines & exhaust burst
+  // Aerodynamic speed lines & exhaust burst
   const streaks = createSpeedStreaks(reducedMotion ? 0 : 200);
   scene.add(streaks.points);
 
   const burst = createExhaustBurst();
   scene.add(burst.points);
 
-  // Ground shadow follows car position/scale
-  const effectsRig = new THREE.Group();
-  scene.add(effectsRig);
-  const shadow = createShadow();
-  effectsRig.add(shadow);
-
   // Values driven by GSAP
   const carState = { x: 0, y: 0, rotY: 0, rotZ: 0, scale: 1, spin: 0 };
-  const intro = { y: 0, spin: 0, scale: 1, shadow: 1 };
+  const intro = { y: 0, spin: 0, scale: 1 };
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
 
   function viewSize() {
@@ -97,7 +90,7 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
 
   function baseScale() {
     const { w } = viewSize();
-    return Math.min(1.2, w / 5.4);
+    return Math.min(1.2, w / 5.2);
   }
 
   window.addEventListener('pointermove', (e) => {
@@ -127,21 +120,13 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
     scrollRig.rotation.set(0, carState.rotY, carState.rotZ);
     scrollRig.scale.setScalar(carState.scale * intro.scale * baseScale());
 
-    effectsRig.position.copy(scrollRig.position);
-    effectsRig.scale.copy(scrollRig.scale);
-
     if (!reducedMotion) {
-      autoSpin += dt * 0.25;
-      floatRig.position.y = Math.sin(t * 1.3) * 0.08;
-      floatRig.rotation.x = pointer.y * 0.2 + Math.sin(t * 0.9) * 0.03;
-      floatRig.rotation.z = -pointer.x * 0.15;
+      autoSpin += dt * 0.22;
+      floatRig.position.y = Math.sin(t * 1.3) * 0.06;
+      floatRig.rotation.x = pointer.y * 0.18 + Math.sin(t * 0.9) * 0.025;
+      floatRig.rotation.z = -pointer.x * 0.12;
     }
-    spinRig.rotation.y = autoSpin + carState.spin + intro.spin + pointer.x * 0.35;
-
-    // Shadow tightens as car dips and fades as it lifts
-    const lift = floatRig.position.y + intro.y * 0.5;
-    shadow.scale.set(1 - lift * 0.4, 1 - lift * 0.4, 1);
-    shadow.material.opacity = THREE.MathUtils.clamp(0.85 - lift * 1.4, 0, 0.85) * intro.shadow;
+    spinRig.rotation.y = autoSpin + carState.spin + intro.spin + pointer.x * 0.3;
 
     car.update(reducedMotion ? 0 : dt);
     streaks.update(dt, t);
@@ -159,11 +144,10 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
   }
   document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
 
-  // World position of exhaust pipes to aim fire burst
   function exhaustWorldPosition() {
     const v = new THREE.Vector3();
-    if (car.exhaustTips.length > 0) {
-      car.exhaustTips[0].getWorldPosition(v);
+    if (car.exhaustAnchor) {
+      car.exhaustAnchor.getWorldPosition(v);
     }
     return v;
   }

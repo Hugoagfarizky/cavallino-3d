@@ -24,17 +24,14 @@ function initIgniteButton(world) {
     const tl = gsap.timeline();
     if (!ignited) {
       ignited = true;
-      // Active spoiler lifts up
-      tl.to(world.car.spoilerPivot.rotation, { x: -0.35, duration: 0.35, ease: 'back.out(2.5)' }, 0)
-        .to(world.car.spoilerPivot.position, { y: 0.82, duration: 0.35, ease: 'power2.out' }, 0);
       label.textContent = '1,000 CV Unleashed!';
     }
 
-    // Shoot dual exhaust flame burst
+    // Shoot dual exhaust flame burst from actual Ferrari exhaust
     tl.call(() => world.burst.fire(world.exhaustWorldPosition()), null, 0.12);
 
     // Car recoil and vibration
-    tl.to(world.intro, { y: 0.45, duration: 0.18, ease: 'power2.out' }, 0.08)
+    tl.to(world.intro, { y: 0.35, duration: 0.18, ease: 'power2.out' }, 0.08)
       .to(world.intro, { y: 0, duration: 0.9, ease: 'bounce.out' });
 
     // Speed particles flare up to warp speed
@@ -46,16 +43,22 @@ async function init() {
   document.body.classList.add('is-loading');
   await waitForFonts();
 
-  const world = createScene(document.getElementById('webgl'), { reducedMotion });
-  world.start();
+  try {
+    const world = await createScene(document.getElementById('webgl'), { reducedMotion });
+    world.start();
 
-  initScroll(world, { reducedMotion });
-  initIgniteButton(world);
+    initScroll(world, { reducedMotion });
+    initIgniteButton(world);
 
-  document.querySelector('.loader').classList.add('is-done');
-  document.body.classList.remove('is-loading');
+    document.querySelector('.loader').classList.add('is-done');
+    document.body.classList.remove('is-loading');
 
-  playIntro(world, { reducedMotion });
+    playIntro(world, { reducedMotion });
+  } catch (err) {
+    console.error('Initialization failed:', err);
+    document.querySelector('.loader').classList.add('is-done');
+    document.body.classList.remove('is-loading');
+  }
 }
 
 init();
