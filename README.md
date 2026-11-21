@@ -2,6 +2,8 @@
 
 A luxury motion-driven 3D web experience celebrating the **Ferrari 458 Italia** and its legendary naturally aspirated 4.5L V8 engine. Designed with a clean **White & Rosso Corsa** architectural gallery theme, continuous scroll-choreographed 3D keyframes, an interactive 3D mechanical V8 engine breakdown, and horizontal Atelier livery customization.
 
+**Live demo:** <https://hugoagfarizky.github.io/cavallino-3d/>
+
 ![Three.js](https://img.shields.io/badge/Three.js-r172-black?logo=three.js)
 ![GSAP](https://img.shields.io/badge/GSAP-3.12-green?logo=greensock)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite)
@@ -56,4 +58,4 @@ npm run build
 
 ## 📄 License
 
-MIT License © 2024 Hugoagfarizky. A bespoke motion design concept celebrating Ferrari engineering.
+[MIT](LICENSE) © 2026 Hugoagfarizky. A bespoke motion design concept celebrating Ferrari engineering.
