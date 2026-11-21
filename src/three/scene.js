@@ -51,10 +51,12 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
 
   const scene = new THREE.Scene();
 
-  // Try loading real HDR environment map for photorealism, with fallback
+  // Try loading the real HDR environment map for photorealism, with a fallback
   try {
     const rgbeLoader = new RGBELoader();
-    const envTexture = await rgbeLoader.loadAsync('/textures/venice_sunset_1k.hdr');
+    const envTexture = await rgbeLoader.loadAsync(
+      `${import.meta.env.BASE_URL}textures/venice_sunset_1k.hdr`
+    );
     envTexture.mapping = THREE.EquirectangularReflectionMapping;
     scene.environment = envTexture;
   } catch (e) {

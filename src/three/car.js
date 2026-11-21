@@ -91,14 +91,15 @@ export function loadCar() {
     });
 
     // Setup Draco Loader
+    const base = import.meta.env.BASE_URL;
     const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('/draco/gltf/');
+    dracoLoader.setDecoderPath(`${base}draco/gltf/`);
 
     const loader = new GLTFLoader();
     loader.setDRACOLoader(dracoLoader);
 
     loader.load(
-      '/models/ferrari.glb',
+      `${base}models/ferrari.glb`,
       (gltf) => {
         const carModel = gltf.scene.children[0];
 
@@ -145,7 +146,7 @@ export function loadCar() {
         if (wRR) wheels.push(wRR);
 
         // Ambient occlusion contact shadow (crisp asphalt contact)
-        const shadowTex = new THREE.TextureLoader().load('/models/ferrari_ao.png');
+        const shadowTex = new THREE.TextureLoader().load(`${base}models/ferrari_ao.png`);
         shadowTex.colorSpace = THREE.SRGBColorSpace;
         const shadowMesh = new THREE.Mesh(
           new THREE.PlaneGeometry(0.655 * 4.3, 1.3 * 4.3),
