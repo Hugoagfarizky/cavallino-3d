@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { loadCar } from './car.js';
-import { createV8Engine } from './engine.js';
+import { loadV8Engine } from './engine.js';
 import { createSpeedStreaks, createExhaustBurst } from './particles.js';
 
 /**
@@ -51,7 +51,7 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
 
   const scene = new THREE.Scene();
 
-  // Try loading the real HDR environment map for photorealism, with a fallback
+  // Try loading real HDR environment map for photorealism, with fallback
   try {
     const rgbeLoader = new RGBELoader();
     const envTexture = await rgbeLoader.loadAsync(
@@ -67,8 +67,8 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(0, 0, 11);
 
-  // ── Sunlight & Studio Illuminators (Natural Lighting as seen in reference) ──
-  // 1. Direct Sun Key Light (creates the bright specular gleam on the front hood & roof)
+  // ── Sunlight & Natural Illuminators (Matches real Ferrari outdoor photography) ──
+  // 1. Direct Sun Key Light (creates the sharp sunlight gleam across hood and roof)
   const sunLight = new THREE.DirectionalLight(0xFFF8EE, 2.0);
   sunLight.position.set(6, 8, 5);
   sunLight.castShadow = true;
@@ -98,8 +98,8 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   scrollRig.add(floatRig);
   scene.add(scrollRig);
 
-  // ── V8 Engine Rig (Dedicated Showcase) ──
-  const engine = createV8Engine();
+  // ── High-Precision Mechanical V8 Engine Rig ──
+  const engine = await loadV8Engine();
   const engineRig = new THREE.Group();
   engineRig.add(engine.group);
   engineRig.position.set(20, 0, 0); // Initially offscreen
@@ -168,7 +168,7 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
     // ── Update Engine Rig ──
     engineRig.position.set((engineState.x * w) / 2, (engineState.y * h) / 2, 0);
     engineRig.rotation.set(0.12, engineState.rotY + pointer.x * 0.4 + t * 0.15, -0.05);
-    engineRig.scale.setScalar(engineState.scale * baseScale() * 1.35);
+    engineRig.scale.setScalar(engineState.scale * baseScale() * 1.25);
 
     car.update(reducedMotion ? 0 : dt);
     engine.update(dt, t);

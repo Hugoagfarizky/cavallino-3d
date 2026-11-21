@@ -9,40 +9,41 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 export const LIVERIES = {
   rosso: {
     color: '#D40006', // True Rosso Corsa (Pantone 185 C)
-    metalness: 0.15,
-    roughness: 0.18,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.02,
-    envMapIntensity: 2.0,
-  },
-  bianco: {
-    color: '#F2F3F6', // Bianco Avus
     metalness: 0.12,
-    roughness: 0.22,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.02,
-    envMapIntensity: 1.8,
-  },
-  nero: {
-    color: '#111215', // Nero Daytona
-    metalness: 0.25,
-    roughness: 0.14,
+    roughness: 0.16,
     clearcoat: 1.0,
     clearcoatRoughness: 0.02,
     envMapIntensity: 2.2,
   },
-  giallo: {
-    color: '#EBA800', // Giallo Modena
-    metalness: 0.15,
+  bianco: {
+    color: '#F4F5F8', // Bianco Avus
+    metalness: 0.1,
     roughness: 0.2,
     clearcoat: 1.0,
     clearcoatRoughness: 0.02,
-    envMapIntensity: 2.0,
+    envMapIntensity: 1.9,
+  },
+  nero: {
+    color: '#111215', // Nero Daytona
+    metalness: 0.22,
+    roughness: 0.14,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.02,
+    envMapIntensity: 2.3,
+  },
+  giallo: {
+    color: '#F0B000', // Giallo Modena
+    metalness: 0.12,
+    roughness: 0.18,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.02,
+    envMapIntensity: 2.1,
   },
 };
 
 /**
  * Loads and configures the production-grade photorealistic Ferrari 458 Italia 3D model.
+ * Assigns bespoke realistic PBR materials to EVERY individual component.
  */
 export function loadCar() {
   return new Promise((resolve, reject) => {
@@ -61,23 +62,76 @@ export function loadCar() {
       envMapIntensity: LIVERIES.rosso.envMapIntensity,
     });
 
-    // 2. Star 5-Spoke Forged Alloy Wheels (Brushed Satin Silver as seen in reference)
+    // 2. Star 5-Spoke Forged Alloy Wheels (Brushed Satin Silver as seen in reference photo)
     const rimMaterial = new THREE.MeshStandardMaterial({
       color: 0xE2E4E8,
-      metalness: 0.92,
-      roughness: 0.18,
-      envMapIntensity: 2.4,
+      metalness: 0.94,
+      roughness: 0.15,
+      envMapIntensity: 2.5,
     });
 
-    // 3. Carbon Fiber & Aerodynamic Composite Trim
-    const trimMaterial = new THREE.MeshStandardMaterial({
-      color: 0x1A1B1E,
-      metalness: 0.35,
-      roughness: 0.45,
-      envMapIntensity: 1.5,
+    // 3. Vulcanized Tread Rubber Tires
+    const tireMaterial = new THREE.MeshStandardMaterial({
+      color: 0x18181A,
+      metalness: 0.04,
+      roughness: 0.92,
+      envMapIntensity: 0.8,
     });
 
-    // 4. Automotive Tinted Glass with Interior Refraction
+    // 4. Brembo Brake Calipers (Rosso Corsa Racing Gloss)
+    const caliperMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xC40000,
+      metalness: 0.65,
+      roughness: 0.22,
+      clearcoat: 0.9,
+      clearcoatRoughness: 0.05,
+      envMapIntensity: 2.0,
+    });
+
+    // 5. Cross-Drilled Ventilated Carbon-Ceramic Brake Rotors
+    const rotorMaterial = new THREE.MeshStandardMaterial({
+      color: 0xA8ABB0,
+      metalness: 0.95,
+      roughness: 0.28,
+      envMapIntensity: 2.0,
+    });
+
+    // 6. Crystal Clear Headlight Projector Glass
+    const headlightGlassMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xFFFFFF,
+      metalness: 0.1,
+      roughness: 0.02,
+      transmission: 0.98,
+      thickness: 0.35,
+      ior: 1.52,
+      transparent: true,
+      opacity: 0.92,
+      envMapIntensity: 2.6,
+    });
+
+    // 7. LED Daytime Running Lights (DRLs)
+    const ledMaterial = new THREE.MeshStandardMaterial({
+      color: 0xFFFFFF,
+      emissive: 0xFFFFFF,
+      emissiveIntensity: 3.5,
+      roughness: 0.1,
+    });
+
+    // 8. Ruby Red Circular Taillight Glass
+    const taillightGlassMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xFF0000,
+      emissive: 0x660000,
+      emissiveIntensity: 0.6,
+      metalness: 0.2,
+      roughness: 0.05,
+      transmission: 0.88,
+      ior: 1.5,
+      transparent: true,
+      opacity: 0.9,
+      envMapIntensity: 2.2,
+    });
+
+    // 9. Automotive Tinted Glass with Interior Refraction
     const glassMaterial = new THREE.MeshPhysicalMaterial({
       color: 0x14161A,
       metalness: 0.1,
@@ -88,6 +142,62 @@ export function loadCar() {
       transparent: true,
       opacity: 0.88,
       envMapIntensity: 2.2,
+    });
+
+    // 10. Official Ferrari Scuderia Yellow Shield & Hub Caps (Cavallino)
+    const ferrariYellowMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xF5C400,
+      metalness: 0.15,
+      roughness: 0.32,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.05,
+      envMapIntensity: 1.8,
+    });
+
+    // 11. Mirror Chrome Badges, Lettering & Triple Exhaust Tips
+    const chromeMaterial = new THREE.MeshStandardMaterial({
+      color: 0xFFFFFF,
+      metalness: 1.0,
+      roughness: 0.02,
+      envMapIntensity: 3.2,
+    });
+
+    // 12. Carbon Fiber Aerodynamic Aeroelastic Winglets & Diffuser
+    const carbonMaterial = new THREE.MeshStandardMaterial({
+      color: 0x16161A,
+      metalness: 0.35,
+      roughness: 0.42,
+      envMapIntensity: 1.6,
+    });
+
+    // 13. Black Diamond Intake & Radiator Grilles
+    const grillMaterial = new THREE.MeshStandardMaterial({
+      color: 0x111114,
+      metalness: 0.2,
+      roughness: 0.9,
+    });
+
+    // 14. Italian Handcrafted Nero Leather Cockpit & Steering Wheel
+    const leatherMaterial = new THREE.MeshStandardMaterial({
+      color: 0x1E1C1B,
+      metalness: 0.05,
+      roughness: 0.75,
+      envMapIntensity: 1.2,
+    });
+
+    // 15. Dark Upholstery & Charcoal Interior Trim
+    const interiorMaterial = new THREE.MeshStandardMaterial({
+      color: 0x141517,
+      metalness: 0.1,
+      roughness: 0.85,
+    });
+
+    // 16. Matte Windshield Wipers & Exterior Trim
+    const trimMaterial = new THREE.MeshStandardMaterial({
+      color: 0x1A1B1E,
+      metalness: 0.25,
+      roughness: 0.5,
+      envMapIntensity: 1.5,
     });
 
     // Setup Draco Loader
@@ -103,34 +213,78 @@ export function loadCar() {
       (gltf) => {
         const carModel = gltf.scene.children[0];
 
-        // Apply specialized PBR materials to mesh parts
-        const bodyMesh = carModel.getObjectByName('body');
-        if (bodyMesh) {
-          bodyMesh.material = bodyMaterial;
-          bodyMesh.castShadow = true;
-          bodyMesh.receiveShadow = true;
-        }
-
-        const rimFL = carModel.getObjectByName('rim_fl');
-        const rimFR = carModel.getObjectByName('rim_fr');
-        const rimRR = carModel.getObjectByName('rim_rr');
-        const rimRL = carModel.getObjectByName('rim_rl');
-        const trimMesh = carModel.getObjectByName('trim');
-
-        if (rimFL) rimFL.material = rimMaterial;
-        if (rimFR) rimFR.material = rimMaterial;
-        if (rimRR) rimRR.material = rimMaterial;
-        if (rimRL) rimRL.material = rimMaterial;
-        if (trimMesh) trimMesh.material = trimMaterial;
-
-        const glassMesh = carModel.getObjectByName('glass');
-        if (glassMesh) glassMesh.material = glassMaterial;
-
-        // Traverse all meshes to enable shadow casting
+        // ── Map Materials to Mesh Nodes by Name ──
         carModel.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
+          if (!child.isMesh) return;
+
+          child.castShadow = true;
+          child.receiveShadow = true;
+
+          const n = child.name.toLowerCase();
+
+          // Body
+          if (n === 'body') {
+            child.material = bodyMaterial;
+          }
+          // Rims
+          else if (n.startsWith('rim_')) {
+            child.material = rimMaterial;
+          }
+          // Tires
+          else if (n === 'tire') {
+            child.material = tireMaterial;
+          }
+          // Brake Calipers
+          else if (n === 'brakes') {
+            child.material = caliperMaterial;
+          }
+          // Brake Discs & Metal Hubs
+          else if (n === 'brake' || n === 'metal' || n === 'nuts') {
+            child.material = rotorMaterial;
+          }
+          // Ferrari Yellow Badges & Wheel Center Caps
+          else if (n === 'centre' || n === 'yellow_trim' || n === 'steering_centre') {
+            child.material = ferrariYellowMaterial;
+          }
+          // Headlights Projector Glass
+          else if (n === 'lights') {
+            child.material = headlightGlassMaterial;
+          }
+          // LED DRLs & Steering Red Lights
+          else if (n === 'leds' || n === 'steering_red_lights') {
+            child.material = ledMaterial;
+          }
+          // Taillights
+          else if (n === 'lights_red') {
+            child.material = taillightGlassMaterial;
+          }
+          // Tinted Windows & Windshield
+          else if (n === 'glass') {
+            child.material = glassMaterial;
+          }
+          // Chrome Ferrari Cavallino & Exhaust Pipes
+          else if (n === 'chrome' || n === 'steering_metal') {
+            child.material = chromeMaterial;
+          }
+          // Carbon Fiber Parts
+          else if (n.includes('carbon')) {
+            child.material = carbonMaterial;
+          }
+          // Grilles
+          else if (n === 'grills') {
+            child.material = grillMaterial;
+          }
+          // Leather Interior
+          else if (n.includes('leather')) {
+            child.material = leatherMaterial;
+          }
+          // Interior Dark / Carpet
+          else if (n.includes('interior') || n === 'carpet' || n === 'plastic_gray' || n === 'steering_column') {
+            child.material = interiorMaterial;
+          }
+          // Trim & Wipers
+          else if (n === 'trim' || n === 'wipers' || n === 'steering_trim') {
+            child.material = trimMaterial;
           }
         });
 
@@ -145,7 +299,7 @@ export function loadCar() {
         if (wRL) wheels.push(wRL);
         if (wRR) wheels.push(wRR);
 
-        // Ambient occlusion contact shadow (crisp asphalt contact)
+        // Ambient occlusion contact shadow (crisp asphalt contact beneath wheels)
         const shadowTex = new THREE.TextureLoader().load(`${base}models/ferrari_ao.png`);
         shadowTex.colorSpace = THREE.SRGBColorSpace;
         const shadowMesh = new THREE.Mesh(
@@ -155,7 +309,7 @@ export function loadCar() {
             blending: THREE.MultiplyBlending,
             toneMapped: false,
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.92,
             depthWrite: false,
           })
         );
