@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { loadCar } from './car.js';
+import { createV8Engine } from './engine.js';
 import { createSpeedStreaks, createExhaustBurst } from './particles.js';
 
 /**
@@ -51,17 +52,17 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   camera.position.set(0, 0, 11);
 
   // Directional Studio Lights
-  const key = new THREE.DirectionalLight(0xffffff, 1.5);
+  const key = new THREE.DirectionalLight(0xffffff, 1.6);
   key.position.set(5, 7, 6);
   scene.add(key);
 
-  const rim = new THREE.DirectionalLight(0xff4433, 2.5);
+  const rim = new THREE.DirectionalLight(0xff3322, 2.6);
   rim.position.set(-7, 3, -5);
   scene.add(rim);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
-  // ── Rig Hierarchy: scrollRig → floatRig → spinRig → car
+  // ── Car Rig Hierarchy: scrollRig → floatRig → spinRig → car
   const car = await loadCar();
   const scrollRig = new THREE.Group();
   const floatRig = new THREE.Group();
@@ -71,15 +72,24 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   scrollRig.add(floatRig);
   scene.add(scrollRig);
 
+  // ── V8 Engine Rig (Dedicated Showcase) ──
+  const engine = createV8Engine();
+  const engineRig = new THREE.Group();
+  engineRig.add(engine.group);
+  engineRig.position.set(20, 0, 0); // Initially offscreen
+  engineRig.scale.setScalar(0.001);
+  scene.add(engineRig);
+
   // Aerodynamic speed lines & exhaust burst
-  const streaks = createSpeedStreaks(reducedMotion ? 0 : 200);
+  const streaks = createSpeedStreaks(reducedMotion ? 0 : 180);
   scene.add(streaks.points);
 
   const burst = createExhaustBurst();
   scene.add(burst.points);
 
   // Values driven by GSAP
-  const carState = { x: 0, y: 0, rotY: 0, rotZ: 0, scale: 1, spin: 0 };
+  const carState = { x: 0, y: 0, rotY: 0, rotZ: 0, scale: 1, spin: 0, opacity: 1 };
+  const engineState = { x: 1.5, y: 0, rotY: -0.4, scale: 0, spin: 0 };
   const intro = { y: 0, spin: 0, scale: 1 };
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
 
@@ -116,6 +126,7 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
     pointer.x += (pointer.tx - pointer.x) * 0.06;
     pointer.y += (pointer.ty - pointer.y) * 0.06;
 
+    // ── Update Car Rig ──
     scrollRig.position.set((carState.x * w) / 2, (carState.y * h) / 2 + intro.y, 0);
     scrollRig.rotation.set(0, carState.rotY, carState.rotZ);
     scrollRig.scale.setScalar(carState.scale * intro.scale * baseScale());
@@ -128,7 +139,13 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
     }
     spinRig.rotation.y = autoSpin + carState.spin + intro.spin + pointer.x * 0.3;
 
+    // ── Update Engine Rig ──
+    engineRig.position.set((engineState.x * w) / 2, (engineState.y * h) / 2, 0);
+    engineRig.rotation.set(0.12, engineState.rotY + pointer.x * 0.4 + t * 0.15, -0.05);
+    engineRig.scale.setScalar(engineState.scale * baseScale() * 1.35);
+
     car.update(reducedMotion ? 0 : dt);
+    engine.update(dt, t);
     streaks.update(dt, t);
     burst.update(dt);
 
@@ -157,9 +174,11 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
     scene,
     camera,
     car,
+    engine,
     streaks,
     burst,
     carState,
+    engineState,
     intro,
     start,
     exhaustWorldPosition,

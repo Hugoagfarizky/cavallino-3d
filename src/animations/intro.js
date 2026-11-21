@@ -19,19 +19,18 @@ export function playIntro(world, { reducedMotion = false } = {}) {
 
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
 
-  // Ferrari drops in from above while spinning, then settles with elastic rebound
-  gsap.set(world.intro, { y: 8, spin: -Math.PI * 2.5, scale: 0.65, shadow: 0 });
+  // Ferrari drops into the white atelier with elastic rebound
+  gsap.set(world.intro, { y: 8, spin: -Math.PI * 2.5, scale: 0.65 });
   tl.to(world.intro, { y: 0, duration: 1.8, ease: 'elastic.out(1, 0.55)' }, 0)
     .to(world.intro, { spin: 0, duration: 2.2, ease: 'power4.out' }, 0)
-    .to(world.intro, { scale: 1, duration: 1.6, ease: 'back.out(1.5)' }, 0.1)
-    .to(world.intro, { shadow: 1, duration: 1.4, ease: 'power2.out' }, 0.5);
+    .to(world.intro, { scale: 1, duration: 1.6, ease: 'back.out(1.5)' }, 0.1);
 
   tl.from(
     '.hero__line .char',
     { yPercent: 110, rotate: 6, duration: 1.2, stagger: 0.035 },
     0.25
   );
-  tl.from('.nav, .hero__meta', { opacity: 0, y: -16, duration: 1, stagger: 0.1 }, 0.85);
+  tl.from('.nav, .hero__meta, .hero__eyebrow', { opacity: 0, y: -16, duration: 1, stagger: 0.1 }, 0.85);
 
   return tl;
 }

@@ -3,19 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scuderia Ferrari — Motion Experience</title>
-    <meta name="description" content="A motion-driven web experience showcasing the Ferrari SF90 Stradale." />
+    <title>Ferrari 458 Italia — Maranello Atelier</title>
+    <meta name="description" content="An architectural 3D motion experience showcasing the Ferrari 458 Italia and its legendary naturally aspirated V8 engine." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <!-- Loader -->
-    <div class="loader" aria-hidden="true"><span class="loader__dot"></span></div>
+    <div class="loader" aria-hidden="true">
+      <div class="loader__content">
+        <span class="loader__badge">C</span>
+        <span class="loader__dot"></span>
+        <p class="loader__text">MARANELLO ATELIER</p>
+      </div>
+    </div>
 
     <!-- Fixed 3D WebGL Canvas Layer -->
     <canvas id="webgl" aria-hidden="true"></canvas>
@@ -27,114 +33,159 @@
         <span class="nav__brand">CAVALLINO</span>
       </a>
       <nav class="nav__links" aria-label="Primary">
-        <a href="#aero">Aerodynamics</a>
-        <a href="#liveries">Liveries</a>
-        <a href="#story">Heritage</a>
-        <a href="#ignite" class="nav__cta">Ignite V8</a>
+        <a href="#aero">Aerodinamica</a>
+        <a href="#engine">Engine V8</a>
+        <a href="#atelier">Atelier</a>
+        <a href="#heritage">Heritage</a>
+        <a href="#launch" class="nav__cta">Launch Control</a>
       </nav>
     </header>
 
     <main>
-      <!-- 1. HERO -->
-      <section id="hero" class="hero" data-bg="#b30006">
-        <h1 class="hero__title" aria-label="Scuderia Stradale">
-          <span class="hero__line" data-split>SCUDERIA</span>
-          <span class="hero__line" data-split>STRADALE</span>
+      <!-- 1. HERO (CRISP WHITE ATELIER WITH ROSSO ACCENTS) -->
+      <section id="hero" class="hero" data-bg="#fbfbfd">
+        <p class="hero__eyebrow">MARANELLO · PRODUCTION NUMBER 458</p>
+        <h1 class="hero__title" aria-label="Cavallino Italia">
+          <span class="hero__line" data-split>CAVALLINO</span>
+          <span class="hero__line hero__line--accent" data-split>ITALIA 458</span>
         </h1>
         <div class="hero__meta">
-          <p class="hero__tag">Pure adrenaline, since 1947.</p>
-          <div class="hero__scroll"><span></span>Scroll</div>
+          <p class="hero__tag">Pure engineering in its most visceral form.</p>
+          <div class="hero__scroll"><span></span>Explore</div>
         </div>
       </section>
 
-      <!-- 2. AERODYNAMICS & SPEED -->
-      <section id="aero" class="cold" data-bg="#090b0e">
+      <!-- 2. AERODINAMICA (VIBRANT ROSSO CORSA) -->
+      <section id="aero" class="cold" data-bg="#b80006">
         <div class="cold__content">
-          <p class="eyebrow">Aerodynamics & Performance</p>
-          <h2 class="section-title reveal">Sculpted for<br /><em>340 km/h.</em></h2>
+          <p class="eyebrow">Aerodynamics & Downforce</p>
+          <h2 class="section-title reveal">Sculpted by<br /><em>the Wind.</em></h2>
           <p class="lead reveal">
-            Active shut-off Gurney flaps, vortex generators, and twin front diffusers produce
-            390 kg of downforce. Relentless grip that bends the laws of physics.
+            Aeroelastic front winglets deform at high speed to reduce aerodynamic drag while
+            channeling air to underbody venturi tunnels. Unmatched high-speed cornering stability.
           </p>
           <ul class="stats">
-            <li class="reveal"><strong data-count="1000">0</strong><span>CV hybrid output</span></li>
-            <li class="reveal"><strong data-count="340">0</strong><span>km/h max velocity</span></li>
-            <li class="reveal"><strong data-count="390">0</strong><span>kg downforce @ 250</span></li>
+            <li class="reveal"><strong data-count="570">0</strong><span>CV @ 9,000 RPM</span></li>
+            <li class="reveal"><strong data-count="325">0</strong><span>km/h Top Speed</span></li>
+            <li class="reveal"><strong data-count="140">0</strong><span>kg Downforce @ 200</span></li>
           </ul>
         </div>
       </section>
 
-      <!-- 3. LIVERIES (PINNED HORIZONTAL TRACK) -->
-      <section id="liveries" class="flavors">
+      <!-- 3. THE 4.5L V8 ENGINE (SHOWCASE WITH 3D OBJECT & ANATOMY) -->
+      <section id="engine" class="engine-section" data-bg="#ffffff">
+        <div class="engine-content">
+          <div class="engine-header">
+            <p class="eyebrow text-red">Mechanical Masterpiece</p>
+            <h2 class="section-title reveal text-dark">Naturally Aspirated<br /><em>4.5L V8 Engine.</em></h2>
+            <p class="lead reveal text-muted">
+              Crowned International Engine of the Year. Delivering 127 CV per liter without turbochargers.
+              Crafted in Maranello's foundry with Formula 1 metallurgy and acoustic tuning.
+            </p>
+          </div>
+
+          <!-- Engine Technical Specs Grid -->
+          <div class="engine-grid">
+            <div class="engine-card reveal">
+              <span class="engine-card__num">01</span>
+              <h3>180° Flat-Plane Crankshaft</h3>
+              <p>Ensures equal-spaced exhaust pulses into the manifolds, producing razor-sharp throttle response and that iconic 9,000 RPM Ferrari scream.</p>
+            </div>
+            <div class="engine-card reveal">
+              <span class="engine-card__num">02</span>
+              <h3>Resonance Intake Plenums</h3>
+              <p>Dual variable-geometry intake manifolds painted in signature Rosso Corsa wrinkle finish, optimizing air ram effect across every gear.</p>
+            </div>
+            <div class="engine-card reveal">
+              <span class="engine-card__num">03</span>
+              <h3>200-Bar Direct Injection</h3>
+              <p>High-pressure multi-hole injectors optimize air-fuel homogeneity, allowing a ferocious 12.5:1 compression ratio.</p>
+            </div>
+            <div class="engine-card reveal">
+              <span class="engine-card__num">04</span>
+              <h3>Equal-Length Inconel Headers</h3>
+              <p>Hydroformed 4-into-1 tuned exhaust pipes creating continuous harmonic acoustic pulses that exit through triple center exhaust tips.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. ATELIER (PINNED HORIZONTAL TRACK) -->
+      <section id="atelier" class="flavors">
         <div class="flavors__track">
-          <article class="flavor" data-livery="rosso" data-bg="#b30006">
-            <p class="eyebrow">01 / Racing Heritage</p>
+          <article class="flavor" data-livery="rosso" data-bg="#b80006">
+            <p class="eyebrow">Atelier Specification 01</p>
             <h2 class="flavor__name">Rosso<br />Corsa</h2>
-            <p class="lead">The sacred racing red. Worn by champions across eight decades of Formula 1.</p>
+            <p class="lead">The timeless racing red. A direct descendant of Scuderia Ferrari's historic Grand Prix liveries.</p>
           </article>
-          <article class="flavor" data-livery="nero" data-bg="#0f1115">
-            <p class="eyebrow">02 / Midnight Stealth</p>
+          <article class="flavor" data-livery="bianco" data-bg="#ffffff">
+            <p class="eyebrow text-red">Atelier Specification 02</p>
+            <h2 class="flavor__name text-dark">Bianco<br />Avus</h2>
+            <p class="lead text-muted">Pure crystalline white pearl. Accentuates every aerodynamic curve and carbon fiber vent.</p>
+          </article>
+          <article class="flavor" data-livery="nero" data-bg="#111216">
+            <p class="eyebrow">Atelier Specification 03</p>
             <h2 class="flavor__name">Nero<br />Daytona</h2>
-            <p class="lead">Metallic black infused with deep graphite flakes. Pure nocturnal aggression.</p>
+            <p class="lead">Deep metallic graphite black with diamond-turned forged wheels and yellow Brembo calipers.</p>
           </article>
-          <article class="flavor" data-livery="giallo" data-bg="#996e00">
-            <p class="eyebrow">03 / Modena Sun</p>
+          <article class="flavor" data-livery="giallo" data-bg="#cca000">
+            <p class="eyebrow">Atelier Specification 04</p>
             <h2 class="flavor__name">Giallo<br />Modena</h2>
-            <p class="lead">The vibrant canary yellow of Enzo Ferrari's birthplace coat of arms.</p>
-          </article>
-          <article class="flavor" data-livery="blu" data-bg="#0b172a">
-            <p class="eyebrow">04 / Royal Elegance</p>
-            <h2 class="flavor__name">Blu<br />Pozzi</h2>
-            <p class="lead">An aristocratic deep nautical blue that commands timeless presence.</p>
+            <p class="lead">The vibrant yellow of Enzo Ferrari's hometown. Radiant, unapologetic, and thoroughly Italian.</p>
           </article>
         </div>
       </section>
 
-      <!-- 4. HERITAGE & STORY -->
-      <section id="story" class="story" data-bg="#f4ede1">
+      <!-- 5. HERITAGE & ENZO FERRARI -->
+      <section id="heritage" class="story" data-bg="#f6f3ee">
         <div class="story__inner">
-          <p class="eyebrow">Our Heritage</p>
-          <h2 class="section-title reveal">77 years of<br />perfection.</h2>
+          <p class="eyebrow text-red">The Maranello Creed</p>
+          <h2 class="section-title reveal text-dark">Built for the<br />track, bred for life.</h2>
+          <blockquote class="quote reveal">
+            &ldquo;I have never gone on a road trip. For me, the finest vacation is spent inside my workshop, creating engines that breathe passion.&rdquo;
+            <cite>— Enzo Ferrari</cite>
+          </blockquote>
           <ol class="timeline">
             <li class="timeline__item">
               <span class="timeline__year">1947</span>
               <div>
-                <h3>The First Cavallino</h3>
-                <p>Enzo Ferrari drives the 125 S out of the Maranello factory gates. Powered by a 1.5L V12.</p>
+                <h3>The Birth of the Cavallino</h3>
+                <p>Enzo Ferrari unleashes the 125 S in Piacenza, driven by Franco Cortese. The legend takes flight.</p>
               </div>
             </li>
             <li class="timeline__item">
-              <span class="timeline__year">1961</span>
+              <span class="timeline__year">1975</span>
               <div>
-                <h3>Formula 1 Domination</h3>
-                <p>The legendary 156 'Sharknose' takes both Drivers' and Constructors' World Championships.</p>
+                <h3>The First Mid-Engine V8</h3>
+                <p>The 308 GTB introduces the transverse 2.9L V8, establishing Ferrari's premier mid-rear sports car lineage.</p>
               </div>
             </li>
             <li class="timeline__item">
-              <span class="timeline__year">2019</span>
+              <span class="timeline__year">2009</span>
               <div>
-                <h3>The Hybrid Era</h3>
-                <p>The SF90 Stradale debuts: 3 electric motors coupled with a 4.0L twin-turbo V8 producing 1,000 CV.</p>
+                <h3>The Pinnacle: 458 Italia</h3>
+                <p>Designed with input from Michael Schumacher. The final naturally aspirated V8 masterpiece ever made by Ferrari.</p>
               </div>
             </li>
             <li class="timeline__item">
               <span class="timeline__year">Today</span>
               <div>
-                <h3>The Legend Lives</h3>
-                <p>Unrivaled Italian craftsmanship, pushing the frontier of hypercar engineering.</p>
+                <h3>Undisputed Collector Icon</h3>
+                <p>Regarded by automotive connoisseurs worldwide as the greatest sounding modern sports car in history.</p>
               </div>
             </li>
           </ol>
         </div>
       </section>
 
-      <!-- 5. IGNITE / SHARE -->
-      <section id="ignite" class="share" data-bg="#b30006">
+      <!-- 6. LAUNCH CONTROL / IGNITION -->
+      <section id="launch" class="share" data-bg="#ffffff">
         <div class="share__content">
-          <h2 class="share__title reveal">Ignite the<br />Beast.</h2>
-          <p class="lead reveal">1,000 CV waiting for your command. Feel the twin-turbocharged pulse of Maranello.</p>
-          <button class="btn" type="button" id="popBtn">
-            <span>Rev V8 Twin-Turbo</span>
+          <p class="eyebrow text-red">Dynamic Telemetry</p>
+          <h2 class="share__title reveal text-dark">Engage Launch<br />Control.</h2>
+          <p class="lead reveal text-muted">Hold the brake, floor the accelerator, and release. Unleash 9,000 RPM of naturally aspirated Italian fury.</p>
+          <button class="btn btn--launch" type="button" id="popBtn">
+            <span>Fire V8 Ignition (9,000 RPM)</span>
           </button>
         </div>
       </section>
@@ -142,11 +193,14 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>A motion design concept inspired by Ferrari S.p.A. craftsmanship.</p>
+      <div class="footer__brand">
+        <span class="footer__badge">C</span>
+        <span>CAVALLINO ATELIER · MARANELLO (45.3527° N, 10.8643° E)</span>
+      </div>
       <nav aria-label="Social">
-        <a href="#">Instagram</a>
-        <a href="#">YouTube</a>
         <a href="#">Scuderia F1</a>
+        <a href="#">Ferrari Classiche</a>
+        <a href="#">Corse Clienti</a>
       </nav>
     </footer>
 

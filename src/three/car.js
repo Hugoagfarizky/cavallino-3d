@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 /**
- * 4 Iconic Ferrari Liveries (PBR Material Configurations)
+ * Authentic Ferrari Atelier Liveries (PBR Formulations)
  */
 export const LIVERIES = {
   rosso: {
@@ -12,6 +12,13 @@ export const LIVERIES = {
     roughness: 0.32,
     clearcoat: 1.0,
     clearcoatRoughness: 0.03,
+  },
+  bianco: {
+    color: '#F4F5F8',
+    metalness: 0.85,
+    roughness: 0.28,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.02,
   },
   nero: {
     color: '#121316',
@@ -24,13 +31,6 @@ export const LIVERIES = {
     color: '#F0B000',
     metalness: 0.85,
     roughness: 0.35,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.03,
-  },
-  blu: {
-    color: '#122543',
-    metalness: 0.9,
-    roughness: 0.28,
     clearcoat: 1.0,
     clearcoatRoughness: 0.03,
   },
@@ -131,7 +131,7 @@ export function loadCar() {
         shadowMesh.renderOrder = 2;
         carModel.add(shadowMesh);
 
-        // Exhaust emitter anchor (center rear triple exhaust)
+        // Center rear triple exhaust emitter anchor
         const exhaustAnchor = new THREE.Object3D();
         exhaustAnchor.position.set(0, 0.42, 2.15);
         carModel.add(exhaustAnchor);

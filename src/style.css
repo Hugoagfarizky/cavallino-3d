@@ -1,16 +1,18 @@
 :root {
-  --red: #b30006;
-  --red-deep: #7a0004;
-  --red-bright: #e3000b;
-  --white: #ffffff;
-  --ink: #0d0d0d;
-  --cream: #f4ede1;
-  --ice: #090b0e;
-  --fg: var(--white);
+  --red: #C40000;
+  --red-deep: #880004;
+  --red-bright: #E3000B;
+  --white: #FFFFFF;
+  --atelier-light: #FBFBFD;
+  --ink: #111317;
+  --ink-secondary: #484D56;
+  --cream: #F6F3EE;
+  --border-light: rgba(17, 19, 23, 0.1);
+  --border-red: rgba(196, 0, 0, 0.25);
   --font-display: 'Anton', 'Impact', sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
-  --gutter: clamp(16px, 4vw, 64px);
+  --gutter: clamp(20px, 4.5vw, 72px);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -27,8 +29,8 @@ html {
 }
 
 body {
-  background: var(--red);
-  color: var(--fg);
+  background: var(--atelier-light);
+  color: var(--ink);
   font-family: var(--font-body);
   line-height: 1.5;
   overflow-x: hidden;
@@ -44,6 +46,11 @@ a {
   text-decoration: none;
 }
 
+/* ---------- Typography Utilities ---------- */
+.text-red { color: var(--red) !important; }
+.text-dark { color: var(--ink) !important; }
+.text-muted { color: var(--ink-secondary) !important; }
+
 /* ---------- Loader ---------- */
 .loader {
   position: fixed;
@@ -51,28 +58,52 @@ a {
   z-index: 100;
   display: grid;
   place-items: center;
-  background: var(--red);
+  background: var(--white);
   transition: opacity 0.6s var(--ease), visibility 0.6s;
 }
 .loader.is-done {
   opacity: 0;
   visibility: hidden;
 }
-.loader__dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--white);
-  animation: pulse 0.9s var(--ease) infinite alternate;
+.loader__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
-@keyframes pulse {
-  to {
-    transform: scale(2.2);
-    opacity: 0.3;
-  }
+.loader__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.4rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(196, 0, 0, 0.35);
+}
+.loader__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: pulseDot 1s var(--ease) infinite alternate;
+}
+@keyframes pulseDot {
+  to { transform: scale(2.4); opacity: 0.3; }
+}
+.loader__text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--ink-secondary);
+  text-transform: uppercase;
 }
 
-/* ---------- WebGL layer (sits above background so the car overlaps headlines) ---------- */
+/* ---------- WebGL layer (sits above background) ---------- */
 #webgl {
   position: fixed;
   inset: 0;
@@ -82,7 +113,7 @@ a {
   pointer-events: none;
 }
 
-/* ---------- Nav ---------- */
+/* ---------- Navigation Header ---------- */
 .nav {
   position: fixed;
   top: 0;
@@ -93,11 +124,11 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 24px var(--gutter);
-  color: var(--white);
+  color: var(--ink);
   transition: color 0.5s var(--ease);
 }
-.nav.is-dark {
-  color: var(--ink);
+.nav.is-light {
+  color: var(--white);
 }
 .nav__logo {
   display: flex;
@@ -109,22 +140,19 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: var(--red-bright);
+  width: 30px;
+  height: 30px;
+  background: var(--red);
   color: var(--white);
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-.nav.is-dark .nav__badge {
-  background: var(--ink);
+  box-shadow: 0 4px 12px rgba(196, 0, 0, 0.3);
 }
 .nav__brand {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -145,8 +173,8 @@ a {
   left: 0;
   bottom: -4px;
   width: 100%;
-  height: 1px;
-  background: currentColor;
+  height: 2px;
+  background: var(--red);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.4s var(--ease);
@@ -156,20 +184,22 @@ a {
   transform-origin: left;
 }
 .nav__cta {
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: 999px;
-  border: 1px solid currentColor;
+  border: 1px solid var(--red);
+  background: var(--red);
+  color: var(--white) !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(196, 0, 0, 0.25);
   transition: all 0.3s var(--ease);
 }
 .nav__cta:hover {
-  background: currentColor;
-  color: var(--red);
-}
-.nav.is-dark .nav__cta:hover {
-  color: var(--cream);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(196, 0, 0, 0.35);
+  background: var(--red-bright);
 }
 
-/* ---------- Shared Sections ---------- */
+/* ---------- Shared Section Styles ---------- */
 main {
   position: relative;
   z-index: 1;
@@ -180,33 +210,31 @@ section {
   padding: 120px var(--gutter);
 }
 .eyebrow {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   margin-bottom: 20px;
-  opacity: 0.85;
 }
 .section-title {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-size: clamp(3rem, 7.8vw, 7.5rem);
   line-height: 0.92;
   text-transform: uppercase;
   margin-bottom: 28px;
 }
 .section-title em {
   font-style: normal;
-  color: #ff3b3b;
+  color: var(--red);
 }
 .lead {
-  max-width: 40ch;
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
-  opacity: 0.85;
-  line-height: 1.6;
+  max-width: 44ch;
+  font-size: clamp(1rem, 1.25vw, 1.22rem);
+  line-height: 1.65;
 }
 
-/* ---------- Hero ---------- */
+/* ---------- 1. Hero Section (White & Red Luxury) ---------- */
 .hero {
   display: flex;
   flex-direction: column;
@@ -216,48 +244,39 @@ section {
   overflow: hidden;
   padding-top: 0;
   padding-bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 1) 0%, rgba(245, 245, 250, 1) 100%);
 }
-/* Spotlight glow behind the car for depth */
-.hero::before,
-.cold::before,
-.share::before {
+.hero::before {
   content: '';
   position: absolute;
   inset: 0;
+  background: radial-gradient(circle at 50% 55%, rgba(196, 0, 0, 0.08) 0%, rgba(255, 255, 255, 0) 55%);
   pointer-events: none;
 }
-.hero::before {
-  background:
-    radial-gradient(circle at 50% 50%, rgba(255, 60, 50, 0.45), rgba(255, 30, 20, 0) 45%),
-    radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 50%, rgba(40, 0, 0, 0.5) 100%);
+.hero__eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 24px;
 }
-.cold::before {
-  background: radial-gradient(circle at 25% 50%, rgba(255, 50, 50, 0.15), rgba(0, 0, 0, 0) 45%);
-}
-.share::before {
-  background: radial-gradient(circle at 72% 50%, rgba(255, 80, 60, 0.5), rgba(255, 30, 20, 0) 42%);
-}
-.hero > *,
-.cold > *,
-.share > * {
-  position: relative;
-}
-.hero > .hero__meta {
-  position: absolute;
-}
-
 .hero__title {
   font-family: var(--font-display);
   font-weight: 400;
   text-align: center;
-  line-height: 0.82;
-  font-size: clamp(4.5rem, 17vw, 17rem);
+  line-height: 0.84;
+  font-size: clamp(4.2rem, 16vw, 16rem);
   letter-spacing: -0.01em;
+  color: var(--ink);
   user-select: none;
 }
 .hero__line {
   display: block;
   overflow: hidden;
+}
+.hero__line--accent {
+  color: var(--red);
 }
 .hero__line .char {
   display: inline-block;
@@ -273,11 +292,13 @@ section {
   align-items: flex-end;
   font-size: 0.9rem;
   font-weight: 500;
+  color: var(--ink-secondary);
 }
 .hero__tag {
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 1.25rem;
+  color: var(--ink);
 }
 .hero__scroll {
   display: flex;
@@ -287,12 +308,13 @@ section {
   letter-spacing: 0.2em;
   font-size: 0.75rem;
   font-weight: 600;
+  color: var(--red);
 }
 .hero__scroll span {
   display: block;
-  width: 1px;
+  width: 2px;
   height: 42px;
-  background: currentColor;
+  background: var(--red);
   transform-origin: top;
   animation: scrollLine 1.8s var(--ease) infinite;
 }
@@ -303,12 +325,20 @@ section {
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
-/* ---------- Aerodynamics & Cold ---------- */
+/* ---------- 2. Aerodinamica Section (Vibrant Rosso Corsa) ---------- */
 .cold {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   min-height: 130vh;
+  color: var(--white);
+}
+.cold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 60, 40, 0.25) 0%, rgba(0, 0, 0, 0) 50%);
+  pointer-events: none;
 }
 .cold__content {
   width: min(580px, 100%);
@@ -319,7 +349,7 @@ section {
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-top: 48px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
   padding-top: 28px;
 }
 .stats strong {
@@ -332,10 +362,62 @@ section {
 .stats span {
   font-size: 0.8rem;
   font-weight: 500;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
-/* ---------- Liveries (Horizontal pinned track) ---------- */
+/* ---------- 3. V8 Engine Section (Crisp White Gallery) ---------- */
+.engine-section {
+  display: flex;
+  align-items: center;
+  min-height: 140vh;
+  background: var(--white);
+  color: var(--ink);
+}
+.engine-content {
+  width: min(640px, 100%);
+  z-index: 3;
+}
+.engine-header {
+  margin-bottom: 40px;
+}
+.engine-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.engine-card {
+  padding: 24px;
+  background: #F9FAFC;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: all 0.35s var(--ease);
+}
+.engine-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-red);
+  box-shadow: 0 10px 30px rgba(196, 0, 0, 0.08);
+}
+.engine-card__num {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--red);
+  margin-bottom: 8px;
+}
+.engine-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.engine-card p {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+}
+
+/* ---------- 4. Atelier Section (Pinned Horizontal Track) ---------- */
 .flavors {
   padding: 0;
   height: 100vh;
@@ -353,6 +435,7 @@ section {
   flex-direction: column;
   justify-content: center;
   padding: 0 var(--gutter);
+  color: var(--white);
 }
 .flavor__name {
   font-family: var(--font-display);
@@ -363,12 +446,31 @@ section {
   margin-bottom: 24px;
 }
 
-/* ---------- Heritage & Story ---------- */
+/* ---------- 5. Heritage Section (Vintage Cream Paper) ---------- */
 .story {
   color: var(--ink);
+  background: var(--cream);
 }
 .story__inner {
   width: min(640px, 100%);
+}
+.quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  padding-left: 20px;
+  border-left: 3px solid var(--red);
+  color: var(--ink);
+}
+.quote cite {
+  display: block;
+  font-style: normal;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 12px;
+  color: var(--red);
 }
 .timeline {
   list-style: none;
@@ -379,7 +481,7 @@ section {
   grid-template-columns: 160px 1fr;
   gap: 24px;
   padding: 32px 0;
-  border-top: 1px solid rgba(17, 17, 17, 0.15);
+  border-top: 1px solid rgba(17, 19, 23, 0.12);
 }
 .timeline__year {
   font-family: var(--font-display);
@@ -390,17 +492,18 @@ section {
 .timeline__item h3 {
   font-size: 1.2rem;
   margin-bottom: 6px;
-  font-weight: 600;
+  font-weight: 700;
 }
 .timeline__item p {
   opacity: 0.75;
 }
 
-/* ---------- Ignite / Share ---------- */
+/* ---------- 6. Launch Control Section (Crisp White) ---------- */
 .share {
   display: flex;
   align-items: center;
   min-height: 110vh;
+  background: var(--white);
 }
 .share__content {
   width: min(580px, 100%);
@@ -413,27 +516,27 @@ section {
   text-transform: uppercase;
   margin-bottom: 24px;
 }
-.btn {
+.btn--launch {
   position: relative;
   margin-top: 36px;
-  padding: 20px 42px;
+  padding: 22px 48px;
   border: 0;
   border-radius: 999px;
-  background: var(--white);
-  color: var(--red);
-  font: 700 0.95rem/1 var(--font-body);
+  background: var(--red);
+  color: var(--white);
+  font: 700 1rem/1 var(--font-body);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 36px rgba(196, 0, 0, 0.35);
   transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
-.btn:hover {
+.btn--launch:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 18px 48px rgba(196, 0, 0, 0.45);
 }
-.btn::before {
+.btn--launch::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -441,16 +544,13 @@ section {
   transform: translateY(101%);
   transition: transform 0.45s var(--ease);
 }
-.btn:hover::before {
+.btn--launch:hover::before {
   transform: translateY(0);
 }
-.btn span {
+.btn--launch span {
   position: relative;
   z-index: 1;
   transition: color 0.45s var(--ease);
-}
-.btn:hover span {
-  color: var(--white);
 }
 
 /* ---------- Footer ---------- */
@@ -460,15 +560,37 @@ section {
   align-items: center;
   padding: 40px var(--gutter);
   font-size: 0.85rem;
-  opacity: 0.6;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--white);
+  color: var(--ink-secondary);
+  border-top: 1px solid var(--border-light);
+}
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.footer__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 4px;
 }
 .footer nav {
   display: flex;
-  gap: 24px;
+  gap: 28px;
+  font-weight: 600;
 }
 .footer a:hover {
-  text-decoration: underline;
+  color: var(--red);
 }
 
 /* ---------- Responsive ---------- */
@@ -479,6 +601,9 @@ section {
   .cold {
     align-items: flex-end;
     padding-bottom: 80px;
+  }
+  .engine-grid {
+    grid-template-columns: 1fr;
   }
   .stats {
     grid-template-columns: 1fr;
