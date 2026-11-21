@@ -45,7 +45,7 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -69,42 +69,56 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
 
   // ── Sunlight & Natural Illuminators (Matches real Ferrari outdoor photography) ──
   // 1. Direct Sun Key Light (creates the sharp sunlight gleam across hood and roof)
-  const sunLight = new THREE.DirectionalLight(0xFFF8EE, 2.0);
-  sunLight.position.set(6, 8, 5);
+  const sunLight = new THREE.DirectionalLight(0xFFFBF4, 2.4);
+  sunLight.position.set(7, 9, 6);
   sunLight.castShadow = true;
   sunLight.shadow.mapSize.set(2048, 2048);
   sunLight.shadow.bias = -0.0001;
   scene.add(sunLight);
 
   // 2. Sky Blue Diffuse Fill Light (mimics daylight sky bounce)
-  const skyFill = new THREE.DirectionalLight(0xCCE2FF, 0.9);
-  skyFill.position.set(-6, 5, -4);
+  const skyFill = new THREE.DirectionalLight(0xD8EAFF, 1.0);
+  skyFill.position.set(-6, 6, -4);
   scene.add(skyFill);
 
   // 3. Ground / Warm Asphalt Bounce
-  const groundBounce = new THREE.DirectionalLight(0xFFE8D6, 0.6);
+  const groundBounce = new THREE.DirectionalLight(0xFFE8D6, 0.7);
   groundBounce.position.set(0, -4, 2);
   scene.add(groundBounce);
 
-  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.4));
+  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.5));
 
   // ── Car Rig Hierarchy: scrollRig → floatRig → spinRig → car
-  const car = await loadCar();
   const scrollRig = new THREE.Group();
   const floatRig = new THREE.Group();
   const spinRig = new THREE.Group();
-  spinRig.add(car.group);
   floatRig.add(spinRig);
   scrollRig.add(floatRig);
   scene.add(scrollRig);
 
+  let car = null;
+  try {
+    car = await loadCar();
+    spinRig.add(car.group);
+    console.log('✓ Ferrari 458 Italia 3D model loaded successfully');
+  } catch (err) {
+    console.error('Failed to load Ferrari 458 model:', err);
+  }
+
   // ── High-Precision Mechanical V8 Engine Rig ──
-  const engine = await loadV8Engine();
   const engineRig = new THREE.Group();
-  engineRig.add(engine.group);
   engineRig.position.set(20, 0, 0); // Initially offscreen
   engineRig.scale.setScalar(0.001);
   scene.add(engineRig);
+
+  let engine = null;
+  try {
+    engine = await loadV8Engine();
+    engineRig.add(engine.group);
+    console.log('✓ V8 Engine 3D model loaded successfully');
+  } catch (err) {
+    console.error('Failed to load V8 Engine model:', err);
+  }
 
   // Aerodynamic speed lines & exhaust burst
   const streaks = createSpeedStreaks(reducedMotion ? 0 : 180);
@@ -170,8 +184,12 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
     engineRig.rotation.set(0.12, engineState.rotY + pointer.x * 0.4 + t * 0.15, -0.05);
     engineRig.scale.setScalar(engineState.scale * baseScale() * 1.25);
 
-    car.update(reducedMotion ? 0 : dt);
-    engine.update(dt, t);
+    if (car && car.update) {
+      car.update(reducedMotion ? 0 : dt);
+    }
+    if (engine && engine.update) {
+      engine.update(dt, t);
+    }
     streaks.update(dt, t);
     burst.update(dt);
 
@@ -189,17 +207,25 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
 
   function exhaustWorldPosition() {
     const v = new THREE.Vector3();
-    if (car.exhaustAnchor) {
+    if (car && car.exhaustAnchor) {
       car.exhaustAnchor.getWorldPosition(v);
     }
     return v;
   }
 
+  // Ensure safe fallback interface for car if null
+  const carInterface = car || {
+    group: new THREE.Group(),
+    setLivery: () => {},
+    update: () => {},
+    exhaustAnchor: null,
+  };
+
   return {
     renderer,
     scene,
     camera,
-    car,
+    car: carInterface,
     engine,
     streaks,
     burst,

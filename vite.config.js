@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 
-export default defineConfig({
-  base: '/cavallino-3d/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/cavallino-3d/' : '/',
   server: {
     port: 5173,
     open: false,
@@ -9,4 +9,4 @@ export default defineConfig({
       ignored: ['**/public/**', '**/.git/**']
     }
   }
-})
+}))

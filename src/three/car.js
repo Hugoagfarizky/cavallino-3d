@@ -9,35 +9,35 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 export const LIVERIES = {
   rosso: {
     color: '#D40006', // True Rosso Corsa (Pantone 185 C)
-    metalness: 0.12,
-    roughness: 0.16,
+    metalness: 0.15,
+    roughness: 0.15,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.02,
-    envMapIntensity: 2.2,
+    clearcoatRoughness: 0.03,
+    envMapIntensity: 2.4,
   },
   bianco: {
     color: '#F4F5F8', // Bianco Avus
     metalness: 0.1,
     roughness: 0.2,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.02,
-    envMapIntensity: 1.9,
+    clearcoatRoughness: 0.03,
+    envMapIntensity: 2.0,
   },
   nero: {
     color: '#111215', // Nero Daytona
-    metalness: 0.22,
+    metalness: 0.25,
     roughness: 0.14,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.02,
-    envMapIntensity: 2.3,
+    clearcoatRoughness: 0.03,
+    envMapIntensity: 2.5,
   },
   giallo: {
     color: '#F0B000', // Giallo Modena
     metalness: 0.12,
     roughness: 0.18,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.02,
-    envMapIntensity: 2.1,
+    clearcoatRoughness: 0.03,
+    envMapIntensity: 2.2,
   },
 };
 
@@ -64,15 +64,15 @@ export function loadCar() {
 
     // 2. Star 5-Spoke Forged Alloy Wheels (Brushed Satin Silver as seen in reference photo)
     const rimMaterial = new THREE.MeshStandardMaterial({
-      color: 0xE2E4E8,
+      color: 0xDFE1E5,
       metalness: 0.94,
-      roughness: 0.15,
-      envMapIntensity: 2.5,
+      roughness: 0.16,
+      envMapIntensity: 2.6,
     });
 
     // 3. Vulcanized Tread Rubber Tires
     const tireMaterial = new THREE.MeshStandardMaterial({
-      color: 0x18181A,
+      color: 0x1A1A1D,
       metalness: 0.04,
       roughness: 0.92,
       envMapIntensity: 0.8,
@@ -99,7 +99,7 @@ export function loadCar() {
     // 6. Crystal Clear Headlight Projector Glass
     const headlightGlassMaterial = new THREE.MeshPhysicalMaterial({
       color: 0xFFFFFF,
-      metalness: 0.1,
+      metalness: 0.08,
       roughness: 0.02,
       transmission: 0.98,
       thickness: 0.35,
@@ -211,7 +211,7 @@ export function loadCar() {
     loader.load(
       `${base}models/ferrari.glb`,
       (gltf) => {
-        const carModel = gltf.scene.children[0];
+        const carModel = gltf.scene;
 
         // ── Map Materials to Mesh Nodes by Name ──
         carModel.traverse((child) => {
@@ -227,7 +227,7 @@ export function loadCar() {
             child.material = bodyMaterial;
           }
           // Rims
-          else if (n.startsWith('rim_')) {
+          else if (n.startsWith('rim_') || n === 'wheel') {
             child.material = rimMaterial;
           }
           // Tires
