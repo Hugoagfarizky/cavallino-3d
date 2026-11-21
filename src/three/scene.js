@@ -1,18 +1,20 @@
 import * as THREE from 'three';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { loadCar } from './car.js';
 import { createV8Engine } from './engine.js';
 import { createSpeedStreaks, createExhaustBurst } from './particles.js';
 
 /**
- * Photorealistic Automotive Studio Environment
- * Softbox light strips reflect crisp vertical highlights across the sculpted body.
+ * Photorealistic Studio & Natural Lighting Environment
+ * Combines an HDR environment map for natural sky/horizon reflections
+ * with directional key and rim lighting matching real automotive photography.
  */
-function createStudioEnvironment(renderer) {
+function createFallbackStudioEnvironment(renderer) {
   const env = new THREE.Scene();
   env.add(
     new THREE.Mesh(
       new THREE.SphereGeometry(30, 32, 16),
-      new THREE.MeshBasicMaterial({ color: 0x0a0a0d, side: THREE.BackSide })
+      new THREE.MeshBasicMaterial({ color: 0x111116, side: THREE.BackSide })
     )
   );
 
@@ -25,11 +27,11 @@ function createStudioEnvironment(renderer) {
     env.add(mesh);
   };
 
-  softbox(2.2, 16, 9.5, 0xffffff, [-7, 0, 4]); // Key light strip, left
-  softbox(1.4, 16, 7.0, 0xffefe4, [7, 0, 3]); // Rim light strip, right
-  softbox(12, 5, 3.2, 0xffffff, [0, 10, 1]); // Overhead ceiling
-  softbox(9, 9, 1.4, 0xff2200, [0, -1, -9]); // Warm crimson rear bounce
-  softbox(14, 7, 0.9, 0xd0e8ff, [0, -2, 11]); // Cool front studio fill
+  softbox(3.0, 16, 8.0, 0xffffff, [-7, 4, 4]); // Main sun highlight, left
+  softbox(2.0, 16, 6.0, 0xffefe4, [7, 3, 3]); // Fill highlight, right
+  softbox(14, 6, 3.5, 0xffffff, [0, 10, 1]); // Sky dome
+  softbox(10, 10, 1.5, 0xd40006, [0, -1, -9]); // Warm crimson rear bounce
+  softbox(16, 8, 1.0, 0xd0e8ff, [0, -2, 11]); // Cool blue sky fill
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   const tex = pmrem.fromScene(env, 0.02).texture;
@@ -43,24 +45,46 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.0;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
-  scene.environment = createStudioEnvironment(renderer);
+
+  // Try loading real HDR environment map for photorealism, with fallback
+  try {
+    const rgbeLoader = new RGBELoader();
+    const envTexture = await rgbeLoader.loadAsync('/textures/venice_sunset_1k.hdr');
+    envTexture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.environment = envTexture;
+  } catch (e) {
+    console.warn('Falling back to procedural studio environment:', e);
+    scene.environment = createFallbackStudioEnvironment(renderer);
+  }
 
   const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(0, 0, 11);
 
-  // Directional Studio Lights
-  const key = new THREE.DirectionalLight(0xffffff, 1.6);
-  key.position.set(5, 7, 6);
-  scene.add(key);
+  // ── Sunlight & Studio Illuminators (Natural Lighting as seen in reference) ──
+  // 1. Direct Sun Key Light (creates the bright specular gleam on the front hood & roof)
+  const sunLight = new THREE.DirectionalLight(0xFFF8EE, 2.0);
+  sunLight.position.set(6, 8, 5);
+  sunLight.castShadow = true;
+  sunLight.shadow.mapSize.set(2048, 2048);
+  sunLight.shadow.bias = -0.0001;
+  scene.add(sunLight);
 
-  const rim = new THREE.DirectionalLight(0xff3322, 2.6);
-  rim.position.set(-7, 3, -5);
-  scene.add(rim);
+  // 2. Sky Blue Diffuse Fill Light (mimics daylight sky bounce)
+  const skyFill = new THREE.DirectionalLight(0xCCE2FF, 0.9);
+  skyFill.position.set(-6, 5, -4);
+  scene.add(skyFill);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  // 3. Ground / Warm Asphalt Bounce
+  const groundBounce = new THREE.DirectionalLight(0xFFE8D6, 0.6);
+  groundBounce.position.set(0, -4, 2);
+  scene.add(groundBounce);
+
+  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.4));
 
   // ── Car Rig Hierarchy: scrollRig → floatRig → spinRig → car
   const car = await loadCar();
@@ -88,7 +112,7 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   scene.add(burst.points);
 
   // Values driven by GSAP
-  const carState = { x: 0, y: 0, rotY: 0, rotZ: 0, scale: 1, spin: 0, opacity: 1 };
+  const carState = { x: 0, y: 0, rotY: 0, rotZ: 0, scale: 1, spin: 0 };
   const engineState = { x: 1.5, y: 0, rotY: -0.4, scale: 0, spin: 0 };
   const intro = { y: 0, spin: 0, scale: 1 };
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -133,11 +157,11 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
 
     if (!reducedMotion) {
       autoSpin += dt * 0.22;
-      floatRig.position.y = Math.sin(t * 1.3) * 0.06;
-      floatRig.rotation.x = pointer.y * 0.18 + Math.sin(t * 0.9) * 0.025;
-      floatRig.rotation.z = -pointer.x * 0.12;
+      floatRig.position.y = Math.sin(t * 1.3) * 0.05;
+      floatRig.rotation.x = pointer.y * 0.16 + Math.sin(t * 0.9) * 0.02;
+      floatRig.rotation.z = -pointer.x * 0.1;
     }
-    spinRig.rotation.y = autoSpin + carState.spin + intro.spin + pointer.x * 0.3;
+    spinRig.rotation.y = autoSpin + carState.spin + intro.spin + pointer.x * 0.28;
 
     // ── Update Engine Rig ──
     engineRig.position.set((engineState.x * w) / 2, (engineState.y * h) / 2, 0);
