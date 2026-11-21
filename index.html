@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scuderia Ferrari — Motion Experience</title>
+    <meta name="description" content="A motion-driven web experience showcasing the Ferrari SF90 Stradale." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Loader -->
+    <div class="loader" aria-hidden="true"><span class="loader__dot"></span></div>
+
+    <!-- Fixed 3D WebGL Canvas Layer -->
+    <canvas id="webgl" aria-hidden="true"></canvas>
+
+    <!-- Navigation Header -->
+    <header class="nav">
+      <a href="#hero" class="nav__logo">
+        <span class="nav__badge">C</span>
+        <span class="nav__brand">CAVALLINO</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#aero">Aerodynamics</a>
+        <a href="#liveries">Liveries</a>
+        <a href="#story">Heritage</a>
+        <a href="#ignite" class="nav__cta">Ignite V8</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- 1. HERO -->
+      <section id="hero" class="hero" data-bg="#b30006">
+        <h1 class="hero__title" aria-label="Scuderia Stradale">
+          <span class="hero__line" data-split>SCUDERIA</span>
+          <span class="hero__line" data-split>STRADALE</span>
+        </h1>
+        <div class="hero__meta">
+          <p class="hero__tag">Pure adrenaline, since 1947.</p>
+          <div class="hero__scroll"><span></span>Scroll</div>
+        </div>
+      </section>
+
+      <!-- 2. AERODYNAMICS & SPEED -->
+      <section id="aero" class="cold" data-bg="#090b0e">
+        <div class="cold__content">
+          <p class="eyebrow">Aerodynamics & Performance</p>
+          <h2 class="section-title reveal">Sculpted for<br /><em>340 km/h.</em></h2>
+          <p class="lead reveal">
+            Active shut-off Gurney flaps, vortex generators, and twin front diffusers produce
+            390 kg of downforce. Relentless grip that bends the laws of physics.
+          </p>
+          <ul class="stats">
+            <li class="reveal"><strong data-count="1000">0</strong><span>CV hybrid output</span></li>
+            <li class="reveal"><strong data-count="340">0</strong><span>km/h max velocity</span></li>
+            <li class="reveal"><strong data-count="390">0</strong><span>kg downforce @ 250</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 3. LIVERIES (PINNED HORIZONTAL TRACK) -->
+      <section id="liveries" class="flavors">
+        <div class="flavors__track">
+          <article class="flavor" data-livery="rosso" data-bg="#b30006">
+            <p class="eyebrow">01 / Racing Heritage</p>
+            <h2 class="flavor__name">Rosso<br />Corsa</h2>
+            <p class="lead">The sacred racing red. Worn by champions across eight decades of Formula 1.</p>
+          </article>
+          <article class="flavor" data-livery="nero" data-bg="#0f1115">
+            <p class="eyebrow">02 / Midnight Stealth</p>
+            <h2 class="flavor__name">Nero<br />Daytona</h2>
+            <p class="lead">Metallic black infused with deep graphite flakes. Pure nocturnal aggression.</p>
+          </article>
+          <article class="flavor" data-livery="giallo" data-bg="#996e00">
+            <p class="eyebrow">03 / Modena Sun</p>
+            <h2 class="flavor__name">Giallo<br />Modena</h2>
+            <p class="lead">The vibrant canary yellow of Enzo Ferrari's birthplace coat of arms.</p>
+          </article>
+          <article class="flavor" data-livery="blu" data-bg="#0b172a">
+            <p class="eyebrow">04 / Royal Elegance</p>
+            <h2 class="flavor__name">Blu<br />Pozzi</h2>
+            <p class="lead">An aristocratic deep nautical blue that commands timeless presence.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 4. HERITAGE & STORY -->
+      <section id="story" class="story" data-bg="#f4ede1">
+        <div class="story__inner">
+          <p class="eyebrow">Our Heritage</p>
+          <h2 class="section-title reveal">77 years of<br />perfection.</h2>
+          <ol class="timeline">
+            <li class="timeline__item">
+              <span class="timeline__year">1947</span>
+              <div>
+                <h3>The First Cavallino</h3>
+                <p>Enzo Ferrari drives the 125 S out of the Maranello factory gates. Powered by a 1.5L V12.</p>
+              </div>
+            </li>
+            <li class="timeline__item">
+              <span class="timeline__year">1961</span>
+              <div>
+                <h3>Formula 1 Domination</h3>
+                <p>The legendary 156 'Sharknose' takes both Drivers' and Constructors' World Championships.</p>
+              </div>
+            </li>
+            <li class="timeline__item">
+              <span class="timeline__year">2019</span>
+              <div>
+                <h3>The Hybrid Era</h3>
+                <p>The SF90 Stradale debuts: 3 electric motors coupled with a 4.0L twin-turbo V8 producing 1,000 CV.</p>
+              </div>
+            </li>
+            <li class="timeline__item">
+              <span class="timeline__year">Today</span>
+              <div>
+                <h3>The Legend Lives</h3>
+                <p>Unrivaled Italian craftsmanship, pushing the frontier of hypercar engineering.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 5. IGNITE / SHARE -->
+      <section id="ignite" class="share" data-bg="#b30006">
+        <div class="share__content">
+          <h2 class="share__title reveal">Ignite the<br />Beast.</h2>
+          <p class="lead reveal">1,000 CV waiting for your command. Feel the twin-turbocharged pulse of Maranello.</p>
+          <button class="btn" type="button" id="popBtn">
+            <span>Rev V8 Twin-Turbo</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>A motion design concept inspired by Ferrari S.p.A. craftsmanship.</p>
+      <nav aria-label="Social">
+        <a href="#">Instagram</a>
+        <a href="#">YouTube</a>
+        <a href="#">Scuderia F1</a>
+      </nav>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
