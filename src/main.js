@@ -80,7 +80,15 @@ function initSpotlight() {
   });
 }
 
+// Build version in the footer (commit hash + build date), to tell which
+// deployment the browser is showing
+function showVersion() {
+  const el = document.getElementById('appVersion');
+  if (el) el.textContent = `v ${__APP_VERSION__} · ${__BUILD_DATE__}`;
+}
+
 async function init() {
+  showVersion();
   document.body.classList.add('is-loading');
   await waitForFonts();
 

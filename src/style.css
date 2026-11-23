@@ -650,6 +650,12 @@ section {
   text-transform: none;
   color: var(--red-soft);
 }
+.footer__version {
+  padding-left: 12px;
+  border-left: 1px solid var(--hairline-strong);
+  color: var(--text-tertiary);
+  text-transform: none;
+}
 .footer nav {
   display: flex;
   gap: 28px;
