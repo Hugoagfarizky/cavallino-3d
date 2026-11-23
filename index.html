@@ -3,191 +3,203 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ferrari 458 Italia — Maranello Atelier</title>
-    <meta name="description" content="An architectural 3D motion experience showcasing the Ferrari 458 Italia and its legendary naturally aspirated V8 engine." />
+    <meta name="color-scheme" content="dark" />
+    <title>Ferrari 458 Italia — Atelier Nero</title>
+    <meta name="description" content="A dark, cinematic 3D atelier for the Ferrari 458 Italia and its naturally aspirated V8." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/svg+xml" href="/cavallino-3d/favicon.svg" />
-    <script type="module" crossorigin src="/cavallino-3d/assets/index-uPI3xjKF.js"></script>
-    <link rel="stylesheet" crossorigin href="/cavallino-3d/assets/index-DYMEoU16.css">
+    <link rel="icon" type="image/svg+xml" href="/cavallino-3d/favicon.svg" />
+    <script type="module" crossorigin src="/cavallino-3d/assets/index-DlpP4XrS.js"></script>
+    <link rel="stylesheet" crossorigin href="/cavallino-3d/assets/index-wGxrp8v7.css">
   </head>
   <body>
     <!-- Loader -->
     <div class="loader" aria-hidden="true">
       <div class="loader__content">
-        <span class="loader__badge">C</span>
-        <span class="loader__dot"></span>
-        <p class="loader__text">MARANELLO ATELIER</p>
+        <span class="loader__mark">C</span>
+        <span class="loader__bar"><span></span></span>
+        <p class="loader__text">Warming the V8</p>
       </div>
     </div>
 
     <!-- Fixed 3D WebGL Canvas Layer -->
     <canvas id="webgl" aria-hidden="true"></canvas>
+    <!-- Pointer-following studio light behind the car -->
+    <div class="spotlight" aria-hidden="true"></div>
 
     <!-- Navigation Header -->
     <header class="nav">
-      <a href="#hero" class="nav__logo">
-        <span class="nav__badge">C</span>
-        <span class="nav__brand">CAVALLINO</span>
-      </a>
-      <nav class="nav__links" aria-label="Primary">
-        <a href="#aero">Aerodinamica</a>
-        <a href="#engine">Engine V8</a>
+      <nav class="nav__links nav__links--left" aria-label="Primary">
+        <a href="#aero">Aero</a>
+        <a href="#engine">V8</a>
         <a href="#atelier">Atelier</a>
+      </nav>
+      <a href="#hero" class="nav__logo" aria-label="Cavallino, back to top">
+        <span class="nav__mark">C</span>
+        <span class="nav__brand">Cavallino</span>
+      </a>
+      <nav class="nav__links nav__links--right" aria-label="Secondary">
         <a href="#heritage">Heritage</a>
-        <a href="#launch" class="nav__cta">Launch Control</a>
+        <a href="#launch" class="nav__cta">Ignition</a>
       </nav>
     </header>
 
     <main>
-      <!-- 1. HERO (CRISP WHITE ATELIER WITH ROSSO ACCENTS) -->
-      <section id="hero" class="hero" data-bg="#fbfbfd">
-        <p class="hero__eyebrow">MARANELLO · PRODUCTION NUMBER 458</p>
-        <h1 class="hero__title" aria-label="Cavallino Italia">
-          <span class="hero__line" data-split>CAVALLINO</span>
-          <span class="hero__line hero__line--accent" data-split>ITALIA 458</span>
+      <!-- 1. HERO -->
+      <section id="hero" class="hero" data-bg="#050505">
+        <h1 class="hero__title" aria-label="For those who hear nine thousand">
+          <span class="hero__line" data-split>For those who</span>
+          <span class="hero__line hero__line--italic" data-split>hear 9,000 rpm.</span>
         </h1>
         <div class="hero__meta">
-          <p class="hero__tag">Pure engineering in its most visceral form.</p>
-          <div class="hero__scroll"><span></span>Explore</div>
+          <p class="hero__tag">
+            Ferrari 458 Italia. The last naturally aspirated mid-engine V8 from Maranello,
+            presented in a private atelier after dark.
+          </p>
+          <div class="hero__scroll"><span></span>Scroll to unveil</div>
         </div>
+        <dl class="hero__specs">
+          <div><dt>Engine</dt><dd>4,497 cc V8</dd></div>
+          <div><dt>Output</dt><dd>570 cv</dd></div>
+          <div><dt>Redline</dt><dd>9,000 rpm</dd></div>
+        </dl>
       </section>
 
-      <!-- 2. AERODINAMICA (VIBRANT ROSSO CORSA) -->
-      <section id="aero" class="cold" data-bg="#b80006">
-        <div class="cold__content">
-          <p class="eyebrow">Aerodynamics & Downforce</p>
-          <h2 class="section-title reveal">Sculpted by<br /><em>the Wind.</em></h2>
+      <!-- 2. AERO -->
+      <section id="aero" class="split split--right" data-bg="#0b0506">
+        <div class="split__content">
+          <p class="label"><span class="label__num">01</span> Aerodynamics</p>
+          <h2 class="section-title reveal">Sculpted by<br /><em>the wind.</em></h2>
           <p class="lead reveal">
-            Aeroelastic front winglets deform at high speed to reduce aerodynamic drag while
-            channeling air to underbody venturi tunnels. Unmatched high-speed cornering stability.
+            Front winglets flex at speed to cut drag while feeding air to the underbody.
+            The result is downforce without a single fixed wing.
           </p>
           <ul class="stats">
-            <li class="reveal"><strong data-count="570">0</strong><span>CV @ 9,000 RPM</span></li>
-            <li class="reveal"><strong data-count="325">0</strong><span>km/h Top Speed</span></li>
-            <li class="reveal"><strong data-count="140">0</strong><span>kg Downforce @ 200</span></li>
+            <li class="reveal"><strong data-count="570">0</strong><span>cv at 9,000 rpm</span></li>
+            <li class="reveal"><strong data-count="325">0</strong><span>km/h top speed</span></li>
+            <li class="reveal"><strong data-count="140">0</strong><span>kg downforce at 200</span></li>
           </ul>
         </div>
       </section>
 
-      <!-- 3. THE 4.5L V8 ENGINE (SHOWCASE WITH 3D OBJECT & ANATOMY) -->
-      <section id="engine" class="engine-section" data-bg="#ffffff">
+      <!-- 3. V8 ENGINE -->
+      <section id="engine" class="engine-section" data-bg="#070708">
         <div class="engine-content">
           <div class="engine-header">
-            <p class="eyebrow text-red">Mechanical Masterpiece</p>
-            <h2 class="section-title reveal text-dark">Naturally Aspirated<br /><em>4.5L V8 Engine.</em></h2>
-            <p class="lead reveal text-muted">
-              Crowned International Engine of the Year. Delivering 127 CV per liter without turbochargers.
-              Crafted in Maranello's foundry with Formula 1 metallurgy and acoustic tuning.
+            <p class="label"><span class="label__num">02</span> The heart</p>
+            <h2 class="section-title reveal">Naturally aspirated.<br /><em>Utterly unfiltered.</em></h2>
+            <p class="lead reveal">
+              Four and a half litres, no turbochargers, 127 cv per litre. International Engine
+              of the Year, built in Maranello's foundry.
             </p>
           </div>
 
-          <!-- Engine Technical Specs Grid -->
           <div class="engine-grid">
-            <div class="engine-card reveal">
-              <span class="engine-card__num">01</span>
-              <h3>180° Flat-Plane Crankshaft</h3>
-              <p>Ensures equal-spaced exhaust pulses into the manifolds, producing razor-sharp throttle response and that iconic 9,000 RPM Ferrari scream.</p>
-            </div>
-            <div class="engine-card reveal">
-              <span class="engine-card__num">02</span>
-              <h3>Resonance Intake Plenums</h3>
-              <p>Dual variable-geometry intake manifolds painted in signature Rosso Corsa wrinkle finish, optimizing air ram effect across every gear.</p>
-            </div>
-            <div class="engine-card reveal">
-              <span class="engine-card__num">03</span>
-              <h3>200-Bar Direct Injection</h3>
-              <p>High-pressure multi-hole injectors optimize air-fuel homogeneity, allowing a ferocious 12.5:1 compression ratio.</p>
-            </div>
-            <div class="engine-card reveal">
-              <span class="engine-card__num">04</span>
-              <h3>Equal-Length Inconel Headers</h3>
-              <p>Hydroformed 4-into-1 tuned exhaust pipes creating continuous harmonic acoustic pulses that exit through triple center exhaust tips.</p>
-            </div>
+            <article class="engine-card reveal">
+              <span class="engine-card__num">A</span>
+              <h3>Flat-plane crankshaft</h3>
+              <p>Evenly spaced exhaust pulses for razor-sharp throttle response and the 9,000 rpm scream.</p>
+            </article>
+            <article class="engine-card reveal">
+              <span class="engine-card__num">B</span>
+              <h3>Rosso intake plenums</h3>
+              <p>Variable-geometry intakes in wrinkle-finish red, tuned for ram effect in every gear.</p>
+            </article>
+            <article class="engine-card reveal">
+              <span class="engine-card__num">C</span>
+              <h3>200-bar direct injection</h3>
+              <p>Multi-hole injectors allow a 12.5:1 compression ratio without knock.</p>
+            </article>
+            <article class="engine-card reveal">
+              <span class="engine-card__num">D</span>
+              <h3>Equal-length headers</h3>
+              <p>Hydroformed manifolds turn combustion into one continuous harmonic note.</p>
+            </article>
           </div>
         </div>
       </section>
 
       <!-- 4. ATELIER (PINNED HORIZONTAL TRACK) -->
       <section id="atelier" class="flavors">
+        <p class="label flavors__label"><span class="label__num">03</span> The atelier</p>
         <div class="flavors__track">
-          <article class="flavor" data-livery="rosso" data-bg="#b80006">
-            <p class="eyebrow">Atelier Specification 01</p>
-            <h2 class="flavor__name">Rosso<br />Corsa</h2>
-            <p class="lead">The timeless racing red. A direct descendant of Scuderia Ferrari's historic Grand Prix liveries.</p>
+          <article class="flavor" data-livery="rosso" data-bg="#140304">
+            <p class="flavor__index">Specification 1 / 4</p>
+            <h2 class="flavor__name">Rosso<br /><em>Corsa</em></h2>
+            <p class="lead">The racing red of Scuderia Ferrari's Grand Prix cars, under a deep clearcoat.</p>
           </article>
-          <article class="flavor" data-livery="bianco" data-bg="#ffffff">
-            <p class="eyebrow text-red">Atelier Specification 02</p>
-            <h2 class="flavor__name text-dark">Bianco<br />Avus</h2>
-            <p class="lead text-muted">Pure crystalline white pearl. Accentuates every aerodynamic curve and carbon fiber vent.</p>
+          <article class="flavor" data-livery="bianco" data-bg="#141518">
+            <p class="flavor__index">Specification 2 / 4</p>
+            <h2 class="flavor__name">Bianco<br /><em>Avus</em></h2>
+            <p class="lead">Crystalline white that traces every vent and every carbon edge.</p>
           </article>
-          <article class="flavor" data-livery="nero" data-bg="#111216">
-            <p class="eyebrow">Atelier Specification 03</p>
-            <h2 class="flavor__name">Nero<br />Daytona</h2>
-            <p class="lead">Deep metallic graphite black with diamond-turned forged wheels and yellow Brembo calipers.</p>
+          <article class="flavor" data-livery="nero" data-bg="#1c1d21">
+            <p class="flavor__index">Specification 3 / 4</p>
+            <h2 class="flavor__name">Nero<br /><em>Daytona</em></h2>
+            <p class="lead">Metallic graphite black with diamond-turned forged wheels.</p>
           </article>
-          <article class="flavor" data-livery="giallo" data-bg="#cca000">
-            <p class="eyebrow">Atelier Specification 04</p>
-            <h2 class="flavor__name">Giallo<br />Modena</h2>
-            <p class="lead">The vibrant yellow of Enzo Ferrari's hometown. Radiant, unapologetic, and thoroughly Italian.</p>
+          <article class="flavor" data-livery="giallo" data-bg="#120d02">
+            <p class="flavor__index">Specification 4 / 4</p>
+            <h2 class="flavor__name">Giallo<br /><em>Modena</em></h2>
+            <p class="lead">The yellow of Enzo Ferrari's hometown. Radiant and unapologetic.</p>
           </article>
         </div>
       </section>
 
-      <!-- 5. HERITAGE & ENZO FERRARI -->
-      <section id="heritage" class="story" data-bg="#f6f3ee">
+      <!-- 5. HERITAGE -->
+      <section id="heritage" class="story" data-bg="#0a0908">
         <div class="story__inner">
-          <p class="eyebrow text-red">The Maranello Creed</p>
-          <h2 class="section-title reveal text-dark">Built for the<br />track, bred for life.</h2>
+          <p class="label"><span class="label__num">04</span> Heritage</p>
+          <h2 class="section-title reveal">Built for the track,<br /><em>bred for the road.</em></h2>
           <blockquote class="quote reveal">
-            &ldquo;I have never gone on a road trip. For me, the finest vacation is spent inside my workshop, creating engines that breathe passion.&rdquo;
-            <cite>— Enzo Ferrari</cite>
+            &ldquo;Aerodynamics are for people who can't build engines.&rdquo;
+            <cite>Enzo Ferrari</cite>
           </blockquote>
           <ol class="timeline">
             <li class="timeline__item">
               <span class="timeline__year">1947</span>
               <div>
-                <h3>The Birth of the Cavallino</h3>
-                <p>Enzo Ferrari unleashes the 125 S in Piacenza, driven by Franco Cortese. The legend takes flight.</p>
+                <h3>The first Cavallino</h3>
+                <p>The 125 S takes to the streets of Piacenza with Franco Cortese at the wheel.</p>
               </div>
             </li>
             <li class="timeline__item">
               <span class="timeline__year">1975</span>
               <div>
-                <h3>The First Mid-Engine V8</h3>
-                <p>The 308 GTB introduces the transverse 2.9L V8, establishing Ferrari's premier mid-rear sports car lineage.</p>
+                <h3>The first mid-engine V8</h3>
+                <p>The 308 GTB introduces the transverse 2.9 litre V8 and a lineage that leads to the 458.</p>
               </div>
             </li>
             <li class="timeline__item">
               <span class="timeline__year">2009</span>
               <div>
-                <h3>The Pinnacle: 458 Italia</h3>
-                <p>Designed with input from Michael Schumacher. The final naturally aspirated V8 masterpiece ever made by Ferrari.</p>
+                <h3>458 Italia</h3>
+                <p>Developed with Michael Schumacher's input, and the last naturally aspirated mid-engine V8 Ferrari.</p>
               </div>
             </li>
             <li class="timeline__item">
               <span class="timeline__year">Today</span>
               <div>
-                <h3>Undisputed Collector Icon</h3>
-                <p>Regarded by automotive connoisseurs worldwide as the greatest sounding modern sports car in history.</p>
+                <h3>A collector's icon</h3>
+                <p>Widely held to be one of the greatest sounding road cars ever made.</p>
               </div>
             </li>
           </ol>
         </div>
       </section>
 
-      <!-- 6. LAUNCH CONTROL / IGNITION -->
-      <section id="launch" class="share" data-bg="#ffffff">
+      <!-- 6. IGNITION -->
+      <section id="launch" class="share" data-bg="#000000">
         <div class="share__content">
-          <p class="eyebrow text-red">Dynamic Telemetry</p>
-          <h2 class="share__title reveal text-dark">Engage Launch<br />Control.</h2>
-          <p class="lead reveal text-muted">Hold the brake, floor the accelerator, and release. Unleash 9,000 RPM of naturally aspirated Italian fury.</p>
+          <p class="label"><span class="label__num">05</span> Ignition</p>
+          <h2 class="share__title reveal">Wake the<br /><em>V8.</em></h2>
+          <p class="lead reveal">Hold the brake, floor the throttle, release. Nine thousand revolutions, no turbochargers.</p>
           <button class="btn btn--launch" type="button" id="popBtn">
-            <span>Fire V8 Ignition (9,000 RPM)</span>
+            <span>Start the engine</span>
           </button>
         </div>
       </section>
@@ -196,13 +208,13 @@
     <!-- Footer -->
     <footer class="footer">
       <div class="footer__brand">
-        <span class="footer__badge">C</span>
-        <span>CAVALLINO ATELIER · MARANELLO (45.3527° N, 10.8643° E)</span>
+        <span class="footer__mark">C</span>
+        <span>Cavallino Atelier · Maranello 44.5294° N, 10.8650° E</span>
       </div>
-      <nav aria-label="Social">
-        <a href="#">Scuderia F1</a>
-        <a href="#">Ferrari Classiche</a>
-        <a href="#">Corse Clienti</a>
+      <nav aria-label="Footer">
+        <a href="#hero">Top</a>
+        <a href="#engine">V8</a>
+        <a href="#atelier">Atelier</a>
       </nav>
       <p class="footer__credit">
         V8 engine model:
@@ -214,6 +226,6 @@
         (recoloured, logos removed).
       </p>
     </footer>
-
+
   </body>
 </html>
