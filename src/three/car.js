@@ -1,43 +1,49 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { bakeSurfaceCoords, withSurface } from './surface.js';
 
 /**
  * Photorealistic Automotive PBR Formulations
  * Matches the natural outdoor daylight reflection of real Ferrari paint.
  */
 export const LIVERIES = {
+  // Solid (non-metallic) base coat under a glossy clearcoat, as on real Ferrari paint.
   rosso: {
-    color: '#D40006', // True Rosso Corsa (Pantone 185 C)
-    metalness: 0.15,
-    roughness: 0.15,
+    color: '#C80006', // Rosso Corsa
+    metalness: 0.0,
+    roughness: 0.38,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.03,
-    envMapIntensity: 2.4,
+    clearcoatRoughness: 0.035,
+    envMapIntensity: 1.5,
+    flake: 0.0,
   },
   bianco: {
-    color: '#F4F5F8', // Bianco Avus
-    metalness: 0.1,
-    roughness: 0.2,
+    color: '#ECEDEF', // Bianco Avus
+    metalness: 0.0,
+    roughness: 0.42,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.03,
-    envMapIntensity: 2.0,
+    clearcoatRoughness: 0.035,
+    envMapIntensity: 1.3,
+    flake: 0.0,
   },
   nero: {
-    color: '#111215', // Nero Daytona
-    metalness: 0.25,
-    roughness: 0.14,
+    color: '#0B0C0F', // Nero Daytona (metallic)
+    metalness: 0.55,
+    roughness: 0.42,
     clearcoat: 1.0,
     clearcoatRoughness: 0.03,
-    envMapIntensity: 2.5,
+    envMapIntensity: 1.6,
+    flake: 0.06,
   },
   giallo: {
-    color: '#F0B000', // Giallo Modena
-    metalness: 0.12,
-    roughness: 0.18,
+    color: '#E8A800', // Giallo Modena
+    metalness: 0.0,
+    roughness: 0.38,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.03,
-    envMapIntensity: 2.2,
+    clearcoatRoughness: 0.035,
+    envMapIntensity: 1.4,
+    flake: 0.0,
   },
 };
 
@@ -49,155 +55,185 @@ export function loadCar() {
   return new Promise((resolve, reject) => {
     const group = new THREE.Group();
 
-    // ── High-End Photorealistic PBR Materials ──
-    // 1. Exterior Clearcoat Body Paint (Dielectric base coat with mirror-gloss lacquer)
-    const bodyMaterial = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(LIVERIES.rosso.color),
-      metalness: LIVERIES.rosso.metalness,
-      roughness: LIVERIES.rosso.roughness,
-      clearcoat: LIVERIES.rosso.clearcoat,
-      clearcoatRoughness: LIVERIES.rosso.clearcoatRoughness,
-      ior: 1.52,
-      reflectivity: 1.0,
-      envMapIntensity: LIVERIES.rosso.envMapIntensity,
-    });
+    // ── Photorealistic PBR Materials ──
+    // The GLB ships without textures, so each material gets procedural
+    // micro-detail (see surface.js). Scales are in car-model units (≈ metres).
 
-    // 2. Star 5-Spoke Forged Alloy Wheels (Brushed Satin Silver as seen in reference photo)
-    const rimMaterial = new THREE.MeshStandardMaterial({
-      color: 0xDFE1E5,
-      metalness: 0.94,
-      roughness: 0.16,
-      envMapIntensity: 2.6,
-    });
+    // 1. Body paint: solid base coat + clearcoat with subtle orange peel
+    const bodyMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(LIVERIES.rosso.color),
+        metalness: LIVERIES.rosso.metalness,
+        roughness: LIVERIES.rosso.roughness,
+        clearcoat: LIVERIES.rosso.clearcoat,
+        clearcoatRoughness: LIVERIES.rosso.clearcoatRoughness,
+        ior: 1.5,
+        envMapIntensity: LIVERIES.rosso.envMapIntensity,
+      }),
+      { peelScale: 28, peel: 0.0012, roughScale: 3, roughVar: 0.04, flakeScale: 260, flake: LIVERIES.rosso.flake }
+    );
 
-    // 3. Vulcanized Tread Rubber Tires
-    const tireMaterial = new THREE.MeshStandardMaterial({
-      color: 0x1A1A1D,
-      metalness: 0.04,
-      roughness: 0.92,
-      envMapIntensity: 0.8,
-    });
+    // 2. Forged alloy wheels: satin machined silver
+    const rimMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0xC9CCD1,
+        metalness: 1.0,
+        roughness: 0.24,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.08,
+        envMapIntensity: 1.6,
+      }),
+      { roughScale: 14, roughVar: 0.1 }
+    );
 
-    // 4. Brembo Brake Calipers (Rosso Corsa Racing Gloss)
+    // 3. Tyre rubber: dark, very rough, faintly worn
+    const tireMaterial = withSurface(
+      new THREE.MeshStandardMaterial({
+        color: 0x141416,
+        metalness: 0.0,
+        roughness: 0.86,
+        envMapIntensity: 0.7,
+      }),
+      { roughScale: 18, roughVar: 0.16, bumpScale: 260, bump: 0.0004 }
+    );
+
+    // 4. Brembo calipers: gloss painted
     const caliperMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xC40000,
-      metalness: 0.65,
-      roughness: 0.22,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.05,
-      envMapIntensity: 2.0,
+      color: 0xB00008,
+      metalness: 0.0,
+      roughness: 0.35,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.06,
+      envMapIntensity: 1.3,
     });
 
-    // 5. Cross-Drilled Ventilated Carbon-Ceramic Brake Rotors
-    const rotorMaterial = new THREE.MeshStandardMaterial({
-      color: 0xA8ABB0,
-      metalness: 0.95,
-      roughness: 0.28,
-      envMapIntensity: 2.0,
-    });
+    // 5. Brake discs & hubs: machined cast iron
+    const rotorMaterial = withSurface(
+      new THREE.MeshStandardMaterial({
+        color: 0x8E9196,
+        metalness: 1.0,
+        roughness: 0.42,
+        envMapIntensity: 1.2,
+      }),
+      { roughScale: 30, roughVar: 0.2, bumpScale: 200, bump: 0.0003 }
+    );
 
-    // 6. Crystal Clear Headlight Projector Glass
+    // 6. Headlight lens: clear polycarbonate
     const headlightGlassMaterial = new THREE.MeshPhysicalMaterial({
       color: 0xFFFFFF,
-      metalness: 0.08,
-      roughness: 0.02,
-      transmission: 0.98,
-      thickness: 0.35,
-      ior: 1.52,
-      transparent: true,
-      opacity: 0.92,
-      envMapIntensity: 2.6,
-    });
-
-    // 7. LED Daytime Running Lights (DRLs)
-    const ledMaterial = new THREE.MeshStandardMaterial({
-      color: 0xFFFFFF,
-      emissive: 0xFFFFFF,
-      emissiveIntensity: 3.5,
-      roughness: 0.1,
-    });
-
-    // 8. Ruby Red Circular Taillight Glass
-    const taillightGlassMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xFF0000,
-      emissive: 0x660000,
-      emissiveIntensity: 0.6,
-      metalness: 0.2,
-      roughness: 0.05,
-      transmission: 0.88,
-      ior: 1.5,
-      transparent: true,
-      opacity: 0.9,
-      envMapIntensity: 2.2,
-    });
-
-    // 9. Automotive Tinted Glass with Interior Refraction
-    const glassMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x14161A,
-      metalness: 0.1,
-      roughness: 0.01,
-      transmission: 0.92,
-      thickness: 0.45,
-      ior: 1.52,
-      transparent: true,
-      opacity: 0.88,
-      envMapIntensity: 2.2,
-    });
-
-    // 10. Official Ferrari Scuderia Yellow Shield & Hub Caps (Cavallino)
-    const ferrariYellowMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xF5C400,
-      metalness: 0.15,
-      roughness: 0.32,
-      clearcoat: 0.7,
-      clearcoatRoughness: 0.05,
-      envMapIntensity: 1.8,
-    });
-
-    // 11. Mirror Chrome Badges, Lettering & Triple Exhaust Tips
-    const chromeMaterial = new THREE.MeshStandardMaterial({
-      color: 0xFFFFFF,
-      metalness: 1.0,
-      roughness: 0.02,
-      envMapIntensity: 3.2,
-    });
-
-    // 12. Carbon Fiber Aerodynamic Aeroelastic Winglets & Diffuser
-    const carbonMaterial = new THREE.MeshStandardMaterial({
-      color: 0x16161A,
-      metalness: 0.35,
-      roughness: 0.42,
+      metalness: 0.0,
+      roughness: 0.03,
+      transmission: 1.0,
+      thickness: 0.05,
+      ior: 1.58,
       envMapIntensity: 1.6,
     });
 
-    // 13. Black Diamond Intake & Radiator Grilles
-    const grillMaterial = new THREE.MeshStandardMaterial({
-      color: 0x111114,
-      metalness: 0.2,
-      roughness: 0.9,
+    // 7. LED DRLs
+    const ledMaterial = new THREE.MeshStandardMaterial({
+      color: 0xFFFFFF,
+      emissive: 0xF2F6FF,
+      emissiveIntensity: 2.2,
+      roughness: 0.2,
     });
 
-    // 14. Italian Handcrafted Nero Leather Cockpit & Steering Wheel
-    const leatherMaterial = new THREE.MeshStandardMaterial({
-      color: 0x1E1C1B,
-      metalness: 0.05,
-      roughness: 0.75,
+    // 8. Taillight lens: deep ruby
+    const taillightGlassMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xB4000A,
+      emissive: 0x3A0000,
+      emissiveIntensity: 0.8,
+      metalness: 0.0,
+      roughness: 0.05,
+      transmission: 0.6,
+      thickness: 0.1,
+      ior: 1.49,
+      envMapIntensity: 1.5,
+    });
+
+    // 9. Tinted automotive glass
+    const glassMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x2A2F35,
+      metalness: 0.0,
+      roughness: 0.02,
+      transmission: 0.75,
+      thickness: 0.01,
+      ior: 1.52,
+      envMapIntensity: 1.6,
+    });
+
+    // 10. Scudetto yellow badges & centre caps
+    const ferrariYellowMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xF2C200,
+      metalness: 0.0,
+      roughness: 0.35,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.05,
       envMapIntensity: 1.2,
     });
 
-    // 15. Dark Upholstery & Charcoal Interior Trim
-    const interiorMaterial = new THREE.MeshStandardMaterial({
-      color: 0x141517,
-      metalness: 0.1,
-      roughness: 0.85,
+    // 11. Chrome badges, lettering & exhaust tips
+    const chromeMaterial = new THREE.MeshStandardMaterial({
+      color: 0xF4F5F7,
+      metalness: 1.0,
+      roughness: 0.06,
+      envMapIntensity: 1.8,
     });
 
-    // 16. Matte Windshield Wipers & Exterior Trim
+    // 12. Carbon fibre under lacquer
+    const carbonMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0x111215,
+        metalness: 0.3,
+        roughness: 0.45,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.05,
+        envMapIntensity: 1.2,
+      }),
+      { roughScale: 120, roughVar: 0.35 }
+    );
+
+    // 13. Grilles: textured black plastic
+    const grillMaterial = withSurface(
+      new THREE.MeshStandardMaterial({
+        color: 0x0E0E10,
+        metalness: 0.0,
+        roughness: 0.75,
+        envMapIntensity: 0.8,
+      }),
+      { bumpScale: 300, bump: 0.0003 }
+    );
+
+    // 14. Nappa leather (seats, wheel rim)
+    const leatherMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0x1C1A19,
+        metalness: 0.0,
+        roughness: 0.62,
+        sheen: 0.4,
+        sheenRoughness: 0.6,
+        sheenColor: new THREE.Color(0x3A3634),
+        envMapIntensity: 0.9,
+      }),
+      { roughScale: 40, roughVar: 0.18, bumpScale: 380, bump: 0.0004 }
+    );
+
+    // 15. Dark interior trim & carpet
+    const interiorMaterial = withSurface(
+      new THREE.MeshStandardMaterial({
+        color: 0x121315,
+        metalness: 0.0,
+        roughness: 0.88,
+        envMapIntensity: 0.6,
+      }),
+      { bumpScale: 400, bump: 0.0003 }
+    );
+
+    // 16. Satin black exterior trim & wipers
     const trimMaterial = new THREE.MeshStandardMaterial({
-      color: 0x1A1B1E,
-      metalness: 0.25,
-      roughness: 0.5,
-      envMapIntensity: 1.5,
+      color: 0x151618,
+      metalness: 0.0,
+      roughness: 0.55,
+      envMapIntensity: 1.0,
     });
 
     // Setup Draco Loader
@@ -288,6 +324,9 @@ export function loadCar() {
           }
         });
 
+        // Object-space coordinates for the procedural surface detail
+        bakeSurfaceCoords(carModel);
+
         // Collect wheels for continuous rotation
         const wheels = [];
         const wFL = carModel.getObjectByName('wheel_fl');
@@ -333,6 +372,7 @@ export function loadCar() {
           bodyMaterial.clearcoat = config.clearcoat;
           bodyMaterial.clearcoatRoughness = config.clearcoatRoughness;
           bodyMaterial.envMapIntensity = config.envMapIntensity;
+          bodyMaterial.userData.surface.uFlake.value = config.flake;
         }
 
         resolve({

@@ -44,8 +44,10 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  // Neutral (Khronos PBR) tone mapping keeps Rosso Corsa saturated instead of
+  // shifting it toward orange the way ACES does.
+  renderer.toneMapping = THREE.NeutralToneMapping;
+  renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -73,7 +75,9 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
   sunLight.position.set(7, 9, 6);
   sunLight.castShadow = true;
   sunLight.shadow.mapSize.set(2048, 2048);
-  sunLight.shadow.bias = -0.0001;
+  sunLight.shadow.bias = -0.0002;
+  sunLight.shadow.normalBias = 0.02;
+  sunLight.shadow.radius = 4;
   scene.add(sunLight);
 
   // 2. Sky Blue Diffuse Fill Light (mimics daylight sky bounce)
@@ -113,7 +117,7 @@ export async function createScene(canvas, { reducedMotion = false } = {}) {
 
   let engine = null;
   try {
-    engine = await loadV8Engine();
+    engine = await loadV8Engine(renderer);
     engineRig.add(engine.group);
     console.log('✓ V8 Engine 3D model loaded successfully');
   } catch (err) {
