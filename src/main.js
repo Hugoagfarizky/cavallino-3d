@@ -2,6 +2,7 @@ import gsap from 'gsap';
 import { createScene } from './three/scene.js';
 import { playIntro } from './animations/intro.js';
 import { initScroll } from './animations/scroll.js';
+import { createV8Sound, V8_TIMING } from './audio/v8.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -18,24 +19,47 @@ function initIgniteButton(world) {
   const btn = document.getElementById('popBtn');
   if (!btn) return;
   const label = btn.querySelector('span');
-  let ignited = false;
+  const v8 = createV8Sound();
+  const { catch: catchAt, pull, peak, end } = V8_TIMING;
+  let running = false;
 
   btn.addEventListener('click', () => {
-    const tl = gsap.timeline();
-    if (!ignited) {
-      ignited = true;
-      label.textContent = 'V8 awake';
-    }
+    if (running) return;
+    running = true;
+    btn.setAttribute('aria-busy', 'true');
+    label.textContent = 'Cranking…';
 
-    // Shoot dual exhaust flame burst from actual Ferrari exhaust
-    tl.call(() => world.burst.fire(world.exhaustWorldPosition()), null, 0.12);
+    // Sound: starter → catch → rev to the limiter → overrun pops → idle
+    v8.play();
 
-    // Car recoil and vibration
-    tl.to(world.intro, { y: 0.35, duration: 0.18, ease: 'power2.out' }, 0.08)
-      .to(world.intro, { y: 0, duration: 0.9, ease: 'bounce.out' });
+    const fire = () => world.burst.fire(world.exhaustWorldPosition());
+    const tl = gsap.timeline({
+      onComplete: () => {
+        running = false;
+        btn.removeAttribute('aria-busy');
+        label.textContent = 'Start again';
+      },
+    });
 
-    // Speed particles flare up to warp speed
-    gsap.fromTo(world.streaks.state, { speed: 8 }, { speed: 1, duration: 2.5, ease: 'power2.out' });
+    // Starter motor: a small shudder
+    tl.to(world.intro, { y: 0.04, duration: 0.05, repeat: 7, yoyo: true, ease: 'none' }, 0.02);
+
+    // Engine catches: label, flame and a kick
+    tl.call(() => (label.textContent = 'V8 awake'), null, catchAt)
+      .call(fire, null, catchAt + 0.05)
+      .to(world.intro, { y: 0.22, duration: 0.12, ease: 'power2.out' }, catchAt)
+      .to(world.intro, { y: 0, duration: 0.7, ease: 'bounce.out' }, catchAt + 0.12);
+
+    // Full throttle: the car squats and the streaks race up to speed
+    tl.to(world.intro, { y: -0.08, duration: peak - pull, ease: 'power1.in' }, pull)
+      .fromTo(world.streaks.state, { speed: 1 }, { speed: 9, duration: peak - pull, ease: 'power2.in' }, pull);
+
+    // Lift off at the limiter: flames with the overrun pops, then settle
+    tl.call(fire, null, peak + 0.1)
+      .call(fire, null, peak + 0.55)
+      .to(world.intro, { y: 0, duration: 1, ease: 'elastic.out(1, 0.5)' }, peak)
+      .to(world.streaks.state, { speed: 1, duration: 2, ease: 'power2.out' }, peak)
+      .to({}, { duration: end - peak - 2 }, peak + 2);
   });
 }
 
