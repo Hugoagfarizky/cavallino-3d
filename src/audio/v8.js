@@ -70,6 +70,33 @@ function noiseBuffer(ctx, seconds) {
   return buf;
 }
 
+// A tiny silent WAV, used to switch iOS into its media playback session
+let silentUrl = null;
+function silentWavUrl() {
+  if (silentUrl) return silentUrl;
+  const rate = 8000;
+  const n = rate / 4;
+  const buf = new ArrayBuffer(44 + n);
+  const v = new DataView(buf);
+  const w = (o, str) => [...str].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0, 'RIFF');
+  v.setUint32(4, 36 + n, true);
+  w(8, 'WAVE');
+  w(12, 'fmt ');
+  v.setUint32(16, 16, true);
+  v.setUint16(20, 1, true);
+  v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true);
+  v.setUint32(28, rate, true);
+  v.setUint16(32, 1, true);
+  v.setUint16(34, 8, true);
+  w(36, 'data');
+  v.setUint32(40, n, true);
+  for (let i = 0; i < n; i++) v.setUint8(44 + i, 128); // 8-bit silence
+  silentUrl = URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+  return silentUrl;
+}
+
 function driveCurve(amount) {
   const n = 1024;
   const c = new Float32Array(n);
@@ -83,33 +110,66 @@ function driveCurve(amount) {
 export function createV8Sound() {
   let ctx = null;
   let noise = null;
+  let unlocker = null;
+
+  // iPhone/iPad mute Web Audio when the ring/silent switch is on. Declaring a
+  // "playback" audio session (Safari 17+), and playing a silent <audio>
+  // element for older iOS, makes the engine audible like a video would be.
+  function unlockIOS() {
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = 'playback';
+    } catch {
+      /* not supported */
+    }
+    if (!unlocker) {
+      unlocker = new Audio(silentWavUrl());
+      unlocker.loop = true;
+      unlocker.setAttribute('playsinline', '');
+    }
+    unlocker.play().catch(() => {});
+  }
 
   function context() {
     if (!ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
-      ctx = new AC();
+      ctx = new AC({ latencyHint: 'interactive' });
       noise = noiseBuffer(ctx, 2);
     }
-    if (ctx.state === 'suspended' && ctx.resume) ctx.resume().catch(() => {});
+    if (ctx.state !== 'running' && ctx.resume) ctx.resume().catch(() => {});
     return ctx;
   }
 
   function play() {
-    const ac = context();
-    if (!ac) return false;
+    try {
+      unlockIOS();
+      const ac = context();
+      if (!ac) {
+        console.warn('V8 sound: Web Audio is not supported in this browser.');
+        return false;
+      }
+      schedule(ac);
+      setTimeout(() => unlocker && unlocker.pause(), V8_TIMING.end * 1000 + 200);
+      return true;
+    } catch (err) {
+      console.error('V8 sound failed:', err);
+      return false;
+    }
+  }
 
-    const t0 = ac.currentTime + 0.03;
+  function schedule(ac) {
+    const t0 = ac.currentTime + 0.05;
     const dur = V8_TIMING.end;
 
     // ── Output: compressor keeps peaks civil, master fades at the end ──
     const comp = ac.createDynamicsCompressor();
-    comp.threshold.value = -16;
-    comp.ratio.value = 4;
+    comp.threshold.value = -20;
+    comp.knee.value = 12;
+    comp.ratio.value = 6;
     const master = ac.createGain();
     master.gain.setValueAtTime(0.0001, t0);
-    master.gain.exponentialRampToValueAtTime(0.55, t0 + 0.05);
-    master.gain.setValueAtTime(0.55, t0 + dur - 0.7);
+    master.gain.exponentialRampToValueAtTime(0.85, t0 + 0.05);
+    master.gain.setValueAtTime(0.85, t0 + dur - 0.7);
     master.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     comp.connect(master).connect(ac.destination);
 
@@ -118,7 +178,8 @@ export function createV8Sound() {
     const firing = curve(dur, (t) => Math.max(20, (rpmAt(t) / 60) * 4)); // 4 firings per rev
     const half = firing.map((f) => f / 2);
     const double = firing.map((f) => f * 2);
-    const cutoff = curve(dur, (t) => 300 + rpmAt(t) * 0.75).map((v, i) => v * (0.55 + 0.45 * throttle[i]));
+    const quad = firing.map((f) => f * 4);
+    const cutoff = curve(dur, (t) => 650 + rpmAt(t) * 0.8).map((v, i) => v * (0.55 + 0.45 * throttle[i]));
     const bodyGain = throttle.map((th, i) => (firing[i] > 21 ? 0.18 + 0.62 * th : 0));
     const intakeFreq = curve(dur, (t) => 700 + rpmAt(t) * 0.32);
     const intakeGain = throttle.map((th, i) => (firing[i] > 21 ? 0.02 + 0.16 * th * th : 0));
@@ -137,7 +198,10 @@ export function createV8Sound() {
     const voices = [
       ['sawtooth', firing, 0.5],
       ['square', half, 0.22],
-      ['sawtooth', double, 0.16],
+      ['sawtooth', double, 0.3],
+      // upper harmonic so laptop and phone speakers, which can't reproduce
+      // the low rumble, still carry the engine note
+      ['sawtooth', quad, 0.1],
     ];
     const oscs = voices.map(([type, freq, level]) => {
       const o = ac.createOscillator();
@@ -215,8 +279,6 @@ export function createV8Sound() {
     for (let i = 0; i < 9; i++) {
       popAt(popStart + Math.random() * 1.1, 0.35 + Math.random() * 0.45);
     }
-
-    return true;
   }
 
   return { play };

@@ -81,6 +81,21 @@ export function initScroll(world, { reducedMotion = false } = {}) {
     }
   };
 
+  // Text rises into place as each livery panel slides in. Driven by the pin's
+  // own progress: separate triggers inside a pinned section resolve to the
+  // wrong scroll positions. Defined before the pin is created, because the pin
+  // fires onUpdate immediately when the page loads already scrolled past it.
+  const panelText = panels.map((panel) => panel.querySelectorAll('.flavor__name, .lead'));
+  function revealPanels(progress) {
+    const pos = progress * (panels.length - 1);
+    panelText.forEach((els, i) => {
+      if (i === 0 || reducedMotion) return;
+      const t = gsap.utils.clamp(0, 1, (pos - (i - 0.6)) / 0.5);
+      gsap.to(els, { opacity: t, y: (1 - t) * 60, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
+    });
+  }
+  revealPanels(0);
+
   gsap.to(track, {
     x: () => -distance(),
     ease: 'none',
@@ -102,20 +117,6 @@ export function initScroll(world, { reducedMotion = false } = {}) {
       onLeaveBack: () => car.setLivery('rosso'),
     },
   });
-
-  // Text rises into place as each livery panel slides in. Driven by the pin's
-  // own progress: separate triggers inside a pinned section resolve to the
-  // wrong scroll positions.
-  const panelText = panels.map((panel) => panel.querySelectorAll('.flavor__name, .lead'));
-  function revealPanels(progress) {
-    const pos = progress * (panels.length - 1);
-    panelText.forEach((els, i) => {
-      if (i === 0 || reducedMotion) return;
-      const t = gsap.utils.clamp(0, 1, (pos - (i - 0.6)) / 0.5);
-      gsap.to(els, { opacity: t, y: (1 - t) * 60, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
-    });
-  }
-  revealPanels(0);
 
   // Revert to Rosso Corsa when entering Heritage section
   ScrollTrigger.create({

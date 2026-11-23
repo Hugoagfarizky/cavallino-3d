@@ -96,9 +96,15 @@ async function init() {
     const world = await createScene(document.getElementById('webgl'), { reducedMotion });
     world.start();
 
-    initScroll(world, { reducedMotion });
+    // Wire the ignition button first, and keep a scroll-setup failure from
+    // taking the rest of the page (and the engine sound) down with it.
     initIgniteButton(world);
     initSpotlight();
+    try {
+      initScroll(world, { reducedMotion });
+    } catch (err) {
+      console.error('Scroll animations failed:', err);
+    }
 
     document.querySelector('.loader').classList.add('is-done');
     document.body.classList.remove('is-loading');
