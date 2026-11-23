@@ -57,3 +57,7 @@ npm run build
 ## 📄 License
 
 MIT License © 2024 Hugoagfarizky. A bespoke motion design concept celebrating Ferrari engineering.
+
+### Third-party assets
+
+- **V8 engine model** (`public/models/v8_engine.glb`): ["V8 engine (AUDI R8)"](https://sketchfab.com/3d-models/v8-engine-audi-r8-a65a75c5f60e46498a504e2600137ea7) by [Dorin.Stoica](https://sketchfab.com/Dorin.Stoica), licensed under [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/). Covers recoloured in the site's materials; manufacturer logos are not shown.

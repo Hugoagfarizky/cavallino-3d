@@ -592,6 +592,17 @@ section {
 .footer a:hover {
   color: var(--red);
 }
+.footer {
+  flex-wrap: wrap;
+}
+.footer__credit {
+  flex-basis: 100%;
+  margin-top: 20px;
+  font-size: 0.75rem;
+}
+.footer__credit a {
+  text-decoration: underline;
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {

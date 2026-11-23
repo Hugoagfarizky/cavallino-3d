@@ -70,7 +70,7 @@ export function loadCar() {
         ior: 1.5,
         envMapIntensity: LIVERIES.rosso.envMapIntensity,
       }),
-      { peelScale: 28, peel: 0.0012, roughScale: 3, roughVar: 0.04, flakeScale: 260, flake: LIVERIES.rosso.flake }
+      { peelScale: 28, peel: 0.0012, roughScale: 3, roughVar: 0.04, flakeScale: 260, flake: LIVERIES.rosso.flake, dropScale: 19, drops: 0.30 }
     );
 
     // 2. Forged alloy wheels: satin machined silver
@@ -83,7 +83,7 @@ export function loadCar() {
         clearcoatRoughness: 0.08,
         envMapIntensity: 1.6,
       }),
-      { roughScale: 14, roughVar: 0.1 }
+      { roughScale: 14, roughVar: 0.1, dropScale: 28, drops: 0.23, film: 0.5 }
     );
 
     // 3. Tyre rubber: dark, very rough, faintly worn
@@ -94,18 +94,21 @@ export function loadCar() {
         roughness: 0.86,
         envMapIntensity: 0.7,
       }),
-      { roughScale: 18, roughVar: 0.16, bumpScale: 260, bump: 0.0004 }
+      { roughScale: 18, roughVar: 0.16, bumpScale: 260, bump: 0.0004, dropScale: 28, drops: 0.15, film: 0.85, darken: 0.55 }
     );
 
     // 4. Brembo calipers: gloss painted
-    const caliperMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xB00008,
-      metalness: 0.0,
-      roughness: 0.35,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.06,
-      envMapIntensity: 1.3,
-    });
+    const caliperMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0xB00008,
+        metalness: 0.0,
+        roughness: 0.35,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.06,
+        envMapIntensity: 1.3,
+      }),
+      { dropScale: 30, drops: 0.23 }
+    );
 
     // 5. Brake discs & hubs: machined cast iron
     const rotorMaterial = withSurface(
@@ -115,19 +118,22 @@ export function loadCar() {
         roughness: 0.42,
         envMapIntensity: 1.2,
       }),
-      { roughScale: 30, roughVar: 0.2, bumpScale: 200, bump: 0.0003 }
+      { roughScale: 30, roughVar: 0.2, bumpScale: 200, bump: 0.0003, film: 0.7, darken: 0.7 }
     );
 
     // 6. Headlight lens: clear polycarbonate
-    const headlightGlassMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xFFFFFF,
-      metalness: 0.0,
-      roughness: 0.03,
-      transmission: 1.0,
-      thickness: 0.05,
-      ior: 1.58,
-      envMapIntensity: 1.6,
-    });
+    const headlightGlassMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0xFFFFFF,
+        metalness: 0.0,
+        roughness: 0.03,
+        transmission: 1.0,
+        thickness: 0.05,
+        ior: 1.58,
+        envMapIntensity: 1.6,
+      }),
+      { dropScale: 22, drops: 0.30 }
+    );
 
     // 7. LED DRLs
     const ledMaterial = new THREE.MeshStandardMaterial({
@@ -138,46 +144,58 @@ export function loadCar() {
     });
 
     // 8. Taillight lens: deep ruby
-    const taillightGlassMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xB4000A,
-      emissive: 0x3A0000,
-      emissiveIntensity: 0.8,
-      metalness: 0.0,
-      roughness: 0.05,
-      transmission: 0.6,
-      thickness: 0.1,
-      ior: 1.49,
-      envMapIntensity: 1.5,
-    });
+    const taillightGlassMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0xB4000A,
+        emissive: 0x3A0000,
+        emissiveIntensity: 0.8,
+        metalness: 0.0,
+        roughness: 0.05,
+        transmission: 0.6,
+        thickness: 0.1,
+        ior: 1.49,
+        envMapIntensity: 1.5,
+      }),
+      { dropScale: 22, drops: 0.30 }
+    );
 
     // 9. Tinted automotive glass
-    const glassMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x2A2F35,
-      metalness: 0.0,
-      roughness: 0.02,
-      transmission: 0.75,
-      thickness: 0.01,
-      ior: 1.52,
-      envMapIntensity: 1.6,
-    });
+    const glassMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0x2A2F35,
+        metalness: 0.0,
+        roughness: 0.02,
+        transmission: 0.75,
+        thickness: 0.01,
+        ior: 1.52,
+        envMapIntensity: 1.6,
+      }),
+      { dropScale: 21, drops: 0.35 }
+    );
 
     // 10. Scudetto yellow badges & centre caps
-    const ferrariYellowMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xF2C200,
-      metalness: 0.0,
-      roughness: 0.35,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.05,
-      envMapIntensity: 1.2,
-    });
+    const ferrariYellowMaterial = withSurface(
+      new THREE.MeshPhysicalMaterial({
+        color: 0xF2C200,
+        metalness: 0.0,
+        roughness: 0.35,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.05,
+        envMapIntensity: 1.2,
+      }),
+      { dropScale: 30, drops: 0.20 }
+    );
 
     // 11. Chrome badges, lettering & exhaust tips
-    const chromeMaterial = new THREE.MeshStandardMaterial({
-      color: 0xF4F5F7,
-      metalness: 1.0,
-      roughness: 0.06,
-      envMapIntensity: 1.8,
-    });
+    const chromeMaterial = withSurface(
+      new THREE.MeshStandardMaterial({
+        color: 0xF4F5F7,
+        metalness: 1.0,
+        roughness: 0.06,
+        envMapIntensity: 1.8,
+      }),
+      { dropScale: 30, drops: 0.20 }
+    );
 
     // 12. Carbon fibre under lacquer
     const carbonMaterial = withSurface(
@@ -189,7 +207,7 @@ export function loadCar() {
         clearcoatRoughness: 0.05,
         envMapIntensity: 1.2,
       }),
-      { roughScale: 120, roughVar: 0.35 }
+      { roughScale: 120, roughVar: 0.35, dropScale: 22, drops: 0.28, film: 0.4 }
     );
 
     // 13. Grilles: textured black plastic
@@ -200,7 +218,7 @@ export function loadCar() {
         roughness: 0.75,
         envMapIntensity: 0.8,
       }),
-      { bumpScale: 300, bump: 0.0003 }
+      { bumpScale: 300, bump: 0.0003, dropScale: 28, drops: 0.17, film: 0.7, darken: 0.7 }
     );
 
     // 14. Nappa leather (seats, wheel rim)
@@ -229,12 +247,15 @@ export function loadCar() {
     );
 
     // 16. Satin black exterior trim & wipers
-    const trimMaterial = new THREE.MeshStandardMaterial({
-      color: 0x151618,
-      metalness: 0.0,
-      roughness: 0.55,
-      envMapIntensity: 1.0,
-    });
+    const trimMaterial = withSurface(
+      new THREE.MeshStandardMaterial({
+        color: 0x151618,
+        metalness: 0.0,
+        roughness: 0.55,
+        envMapIntensity: 1.0,
+      }),
+      { dropScale: 25, drops: 0.23, film: 0.6, darken: 0.75 }
+    );
 
     // Setup Draco Loader
     const base = import.meta.env.BASE_URL;
@@ -326,6 +347,11 @@ export function loadCar() {
 
         // Object-space coordinates for the procedural surface detail
         bakeSurfaceCoords(carModel);
+        // Water drops are oriented in car space (gravity = -Y of the car)
+        carModel.traverse((child) => {
+          const surface = child.isMesh && child.material.userData.surface;
+          if (surface) surface.uRootMatrix.value = carModel.matrixWorld;
+        });
 
         // Collect wheels for continuous rotation
         const wheels = [];
