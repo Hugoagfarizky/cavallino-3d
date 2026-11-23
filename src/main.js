@@ -8,8 +8,8 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 async function waitForFonts() {
   if (!document.fonts) return;
   const load = Promise.all([
-    document.fonts.load('56px Anton'),
-    document.fonts.load('600 30px Inter'),
+    document.fonts.load('500 56px Cormorant'),
+    document.fonts.load('400 16px Montserrat'),
   ]);
   await Promise.race([load, new Promise((r) => setTimeout(r, 2000))]);
 }
@@ -24,7 +24,7 @@ function initIgniteButton(world) {
     const tl = gsap.timeline();
     if (!ignited) {
       ignited = true;
-      label.textContent = '1,000 CV Unleashed!';
+      label.textContent = 'V8 awake';
     }
 
     // Shoot dual exhaust flame burst from actual Ferrari exhaust
@@ -39,6 +39,23 @@ function initIgniteButton(world) {
   });
 }
 
+// Pool of studio light on the back wall that drifts toward the pointer
+function initSpotlight() {
+  const spot = document.querySelector('.spotlight');
+  if (!spot || reducedMotion) return;
+  const pos = { x: 50, y: 52 };
+  const setX = gsap.quickTo(pos, 'x', { duration: 1.2, ease: 'power3.out' });
+  const setY = gsap.quickTo(pos, 'y', { duration: 1.2, ease: 'power3.out' });
+  window.addEventListener('pointermove', (e) => {
+    setX(35 + (e.clientX / window.innerWidth) * 30);
+    setY(40 + (e.clientY / window.innerHeight) * 24);
+  });
+  gsap.ticker.add(() => {
+    spot.style.setProperty('--spot-x', `${pos.x}%`);
+    spot.style.setProperty('--spot-y', `${pos.y}%`);
+  });
+}
+
 async function init() {
   document.body.classList.add('is-loading');
   await waitForFonts();
@@ -49,6 +66,7 @@ async function init() {
 
     initScroll(world, { reducedMotion });
     initIgniteButton(world);
+    initSpotlight();
 
     document.querySelector('.loader').classList.add('is-done');
     document.body.classList.remove('is-loading');

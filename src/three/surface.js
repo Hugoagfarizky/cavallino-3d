@@ -12,7 +12,7 @@ import * as THREE from 'three';
  */
 
 /** Global wetness (0 = dry, 1 = soaked). Shared by every material. */
-export const WETNESS = { value: 1 };
+export const WETNESS = { value: 0 };
 
 /**
  * Bakes `aSurfPos` / `aSurfNrm` (position and normal in `root`'s local space)

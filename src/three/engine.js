@@ -81,6 +81,9 @@ export async function loadV8Engine(renderer) {
       textured = withSurface(
         new THREE.MeshPhysicalMaterial({
           map: src.map,
+          // The atlas is painted near-white; tone it down to bare cast aluminium
+          // so it doesn't glow against the dark stage.
+          color: 0x8f9194,
           normalMap: src.normalMap,
           roughnessMap: src.roughnessMap,
           metalnessMap: src.metalnessMap,
@@ -106,7 +109,7 @@ export async function loadV8Engine(renderer) {
   const materials = [textured, wrinkleRed, exhaust];
   for (const mat of materials) {
     if (studioEnv) mat.envMap = studioEnv;
-    mat.envMapIntensity = 0.9;
+    mat.envMapIntensity = 0.55;
   }
 
   // Procedural/wet coordinates in raw model space

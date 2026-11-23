@@ -6,7 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 // Poses per section: x / y are fractions of half the viewport (-1 … 1).
 const POSES = {
   desktop: {
-    hero: { x: 0, y: -0.05, rotY: Math.PI * 0.78, rotZ: 0.04, scale: 1.15 },
+    hero: { x: 0, y: -0.2, rotY: Math.PI * 0.78, rotZ: 0.02, scale: 1.05 },
     aero: { x: -0.42, y: -0.04, rotY: Math.PI * 0.38, rotZ: -0.12, scale: 1.05 },
     engine: { x: -1.8, y: -0.2, rotY: Math.PI * 0.2, rotZ: 0, scale: 0 },
     atelier: { x: 0.44, y: 0, rotY: Math.PI * 1.8, rotZ: 0.08, scale: 1.1 },
@@ -97,28 +97,25 @@ export function initScroll(world, { reducedMotion = false } = {}) {
       onUpdate: (self) => {
         const i = Math.round(self.progress * (panels.length - 1));
         if (self.isActive && i !== activeIndex) applyLivery(i);
+        revealPanels(self.progress);
       },
       onLeaveBack: () => car.setLivery('rosso'),
     },
   });
 
-  // Text slides in as livery panels arrive
-  panels.forEach((panel, i) => {
-    if (i === 0 || reducedMotion) return;
-    gsap.from(panel.querySelectorAll('.eyebrow, .flavor__name, .lead'), {
-      y: 80,
-      opacity: 0,
-      stagger: 0.08,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: '#atelier',
-        start: () => `top+=${distance() * ((i - 0.6) / (panels.length - 1))} top`,
-        end: () => `top+=${distance() * ((i - 0.1) / (panels.length - 1))} top`,
-        scrub,
-        invalidateOnRefresh: true,
-      },
+  // Text rises into place as each livery panel slides in. Driven by the pin's
+  // own progress: separate triggers inside a pinned section resolve to the
+  // wrong scroll positions.
+  const panelText = panels.map((panel) => panel.querySelectorAll('.flavor__name, .lead'));
+  function revealPanels(progress) {
+    const pos = progress * (panels.length - 1);
+    panelText.forEach((els, i) => {
+      if (i === 0 || reducedMotion) return;
+      const t = gsap.utils.clamp(0, 1, (pos - (i - 0.6)) / 0.5);
+      gsap.to(els, { opacity: t, y: (1 - t) * 60, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
     });
-  });
+  }
+  revealPanels(0);
 
   // Revert to Rosso Corsa when entering Heritage section
   ScrollTrigger.create({
