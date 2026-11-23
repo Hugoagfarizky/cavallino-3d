@@ -7,6 +7,8 @@ A luxury motion-driven 3D web experience celebrating the **Ferrari 458 Italia** 
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite)
 ![Draco](https://img.shields.io/badge/Draco_Compression-1.6_MB-blue)
 
+**🔗 Live demo: [hugoagfarizky.github.io/cavallino-3d](https://hugoagfarizky.github.io/cavallino-3d/)**
+
 ---
 
 ## 🎨 Design & Visual Concept
